@@ -11,9 +11,10 @@ const PORT = process.env.PORT || 8000;
 //error handler
 require('express-async-errors')
 /* ------------------------------------------------------- */
-//DB Connection
-const { dbConnection } = require('./src/configs/dbConnection')
-dbConnection()
+//DB Connection 
+//! LOCAL'de calisiyoruz. en son bagla!!!!
+// const { dbConnection } = require('./src/configs/dbConnection')
+// dbConnection()
 
 /* ------------------------------------------------------- */
 app.use(express.json())

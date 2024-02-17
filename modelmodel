@@ -3,7 +3,7 @@
 
 const { mongoose } = require('../configs/dbConnection')
 
-const TwitSchema = new mongoose.Schema({
+const ModelSchema = new mongoose.Schema({
 
     name: {
         type: String,
@@ -12,18 +12,15 @@ const TwitSchema = new mongoose.Schema({
         unique: true
     },
 
-    image: { // URL
-        type: String,
-        trim: true
-    }
+       
 
-}, { collection: 'brands', timestamps: true })
+}, { collection: 'model', timestamps: true })
 
 /* ------------------------------------------------------- */
 // FOR REACT PROJECT:
-BrandSchema.pre('init', function(data) {
+ModelSchema.pre('init', function(data) {
     data.id = data._id
     data.createds = data.createdAt.toLocaleDateString('tr-tr')
 })
 /* ------------------------------------------------------- */
-module.exports = mongoose.model('Brand', BrandSchema)
+module.exports = mongoose.model('Model', ModelSchema)
