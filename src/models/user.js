@@ -49,7 +49,7 @@ const UserSchema = new mongoose.Schema({
 }, { collection: 'user', timestamps: true })
 
 /* ------------------------------------------------------- */
-// FOR REACT PROJECT:
+// FOR REACT PROJECT
 UserSchema.pre('init', function(data) {
     data.id = data._id
     data.createds = data.createdAt.toLocaleDateString('tr-tr')
