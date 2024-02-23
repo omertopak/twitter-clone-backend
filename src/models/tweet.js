@@ -22,6 +22,7 @@ const TweetSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
+    
     //alinti
     quote_count:{
         type: Number,
@@ -53,8 +54,9 @@ const TweetSchema = new mongoose.Schema({
     replies:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Tweet"
-    }]
+    }],
 
+    
     
        
 

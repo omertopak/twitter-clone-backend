@@ -24,10 +24,12 @@ const UserSchema = new mongoose.Schema({
         set: (password) => passwordEncrypt(password)
     },
 
+
     blue_tick:{
         type: Boolean,
         default: false,
     },
+    
 
     description: {
        
