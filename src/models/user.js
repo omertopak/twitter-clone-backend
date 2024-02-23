@@ -11,44 +11,82 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    
+    username:{ 
+        type: String,
+        trim: true,
+        required: true,
+        unique: true
+    },
+    password: {
+        type: String,
+        trim: true,
+        required: true,
+        set: (password) => passwordEncrypt(password)
+    },
+
+    blue_tick:{
+        type: Boolean,
+        default: false,
+    },
+
     description: {
        
     },
+
     protected: {
-       
+        type: Boolean,
+        default: true,
     },
-    verified: {
-       
-    },
+
+    follewers:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+           }
+        ],
     followers_count: {
+        type:Number,
+        default:function () {
+            return this.follewers.length;
+        },
+    },
+
+    following:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+           }
+        ],
+
+    following_count: {
+        type:Number,
+        default:function () {
+            return this.following.length;
+        },
+    },
+
+    profile_image_url_https: {//mongo media
        
     },
-    friends_count: {
-       
-    },
-    created_at: {
-       
-    },
-    profile_image_url_https: {
-       
-    },
-    following: {
-       
-    },
-    follow_request_sent: {
-       
-    },
+    
+    follow_request_sent: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+           }
+        ],
+
     notifications: {
        
     },
 
-    bookmark:{
-
-    },
-    
+    bookmarks:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tweet'
+           }
+        ],
        
-
 }, { collection: 'user', timestamps: true })
 
 /* ------------------------------------------------------- */

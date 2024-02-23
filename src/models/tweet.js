@@ -12,7 +12,7 @@ const TweetSchema = new mongoose.Schema({
         unique: true
     },
 
-    image: { // URL
+    image: { // cahange URL to mongoMedia 
         type: String,
         trim: true
     },
@@ -43,6 +43,8 @@ const TweetSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Tweet"
     }]
+
+    
        
 
 }, { collection: 'tweet', timestamps: true })
