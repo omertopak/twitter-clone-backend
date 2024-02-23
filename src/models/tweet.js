@@ -23,20 +23,31 @@ const TweetSchema = new mongoose.Schema({
         ref:"User"
     },
     //alinti
-    quote_count:{},
+    quote_count:{
+        type: Number,
+    },
 
-    reply_count:{},
+    reply_count:{
+        type: Number,
+    },
     
-    retweet_count:{},
+    retweet_count:{
+        type: Number,
+    },
     
-    favorite_count:{},
+    favorite_count:{
+        type: Number,
+    },
 
     entities: {
-        hashtags:{},
-
-        urls:{},
-
-        user_mentions:{},
+        hashtags:{
+            type: String,
+            trim: true,
+        },
+        user_mentions:{
+            type: String,
+            trim: true,
+        },
     },
 
     replies:[{
