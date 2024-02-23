@@ -76,9 +76,12 @@ const UserSchema = new mongoose.Schema({
            }
         ],
 
-    notifications: {
-       
-    },
+    notifications: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Notification'
+           }
+        ],
 
     bookmarks:[
         {
@@ -89,11 +92,5 @@ const UserSchema = new mongoose.Schema({
        
 }, { collection: 'user', timestamps: true })
 
-/* ------------------------------------------------------- */
-// FOR REACT PROJECT
-UserSchema.pre('init', function(data) {
-    data.id = data._id
-    data.createds = data.createdAt.toLocaleDateString('tr-tr')
-})
 /* ------------------------------------------------------- */
 module.exports = mongoose.User('User', UserSchema)

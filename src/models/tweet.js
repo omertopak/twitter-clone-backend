@@ -49,11 +49,6 @@ const TweetSchema = new mongoose.Schema({
 
 }, { collection: 'tweet', timestamps: true })
 
-/* ------------------------------------------------------- */
-// FOR REACT PROJECT:
-TweetSchema.pre('init', function(data) {
-    data.id = data._id
-    data.createds = data.createdAt.toLocaleDateString('tr-tr')
-})
+
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('Tweet', TweetSchema)

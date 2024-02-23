@@ -5,14 +5,19 @@ const { mongoose } = require('../configs/dbConnection')
 
 const ModelSchema = new mongoose.Schema({
 
-    text: {
+    name: {
         type: String,
         trim: true,
         required: true,
         unique: true
     },
 
-    media:{}
+    readed:{
+        type:Boolean,
+        default:false,
+    },
+
+       
 
 }, { collection: 'model', timestamps: true })
 
