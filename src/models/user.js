@@ -11,9 +11,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
-    location: {
-       
-    },
+    
     description: {
        
     },
@@ -44,6 +42,11 @@ const UserSchema = new mongoose.Schema({
     notifications: {
        
     },
+
+    bookmark:{
+
+    },
+    
        
 
 }, { collection: 'user', timestamps: true })
