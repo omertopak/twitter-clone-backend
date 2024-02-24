@@ -5,7 +5,7 @@ const { mongoose } = require('../configs/dbConnection')
 
 const TweetSchema = new mongoose.Schema({
 
-    text: {
+    description: {
         type: String,
         trim: true,
         required: true,
@@ -22,7 +22,7 @@ const TweetSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
     },
-    
+
     //alinti
     quote_count:{
         type: Number,
