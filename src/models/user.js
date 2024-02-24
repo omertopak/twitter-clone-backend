@@ -1,7 +1,7 @@
 "use strict"
 
-
 const { mongoose } = require('../configs/dbConnection')
+const passwordEncrypt = require('../helpers/passwordEncrypt')
 
 const UserSchema = new mongoose.Schema({
 
@@ -38,6 +38,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         trim: true,
         required: true,
+        set: (password) => passwordEncrypt(password)
     },
 
 
@@ -110,7 +111,7 @@ const UserSchema = new mongoose.Schema({
            }
         ],
        
-}, { collection: 'user', timestamps: true })
+}, { collection: 'users', timestamps: true })
 
 /* ------------------------------------------------------- */
-module.exports = mongoose.User('User', UserSchema)
+module.exports = mongoose.model('User', UserSchema)
