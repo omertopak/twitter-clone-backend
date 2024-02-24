@@ -18,8 +18,14 @@ require('express-async-errors')
 
 /* ------------------------------------------------------- */
 app.use(express.json())
+// Check Authentication:  
+//! req.user datasini yolladik
+app.use(require('./src/middlewares/authentication'))
 
-
+// Routes:
+// app.use(require('./src/routes'))
+app.use('/users', require('./src/routes/user'))
+app.use('/users/auth', require('./src/routes/auth'))
 /* ------------------------------------------------------- */
 
 app.use(require('./src/middlewares/errorHandler'))
