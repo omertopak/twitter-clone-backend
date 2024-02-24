@@ -5,23 +5,39 @@ const { mongoose } = require('../configs/dbConnection')
 
 const UserSchema = new mongoose.Schema({
 
-    name: {
+    first_name: {
         type: String,
         trim: true,
         required: true,
-        unique: true
     },
+    last_name: {
+        type: String,
+        trim: true,
+        required: true,
+    },
+
     username:{ 
         type: String,
         trim: true,
         required: true,
         unique: true
     },
+
+    email:{
+        type: String,
+        trim: true,
+        required: [true, 'Email field must be required'],
+        unique: [true, 'There is this email. Email field must be unique'],
+        validate: [
+            (email) => email.includes('@') && email.includes('.'),
+            'Email type is not correct.'
+        ]
+    },
+
     password: {
         type: String,
         trim: true,
         required: true,
-        set: (password) => passwordEncrypt(password)
     },
 
 
@@ -31,11 +47,12 @@ const UserSchema = new mongoose.Schema({
     },
     
 
-    description: {
-       
+    bio: {
+        type: String,
+        trim: true,
     },
 
-    protected: {
+    private: {
         type: Boolean,
         default: true,
     },
@@ -68,7 +85,8 @@ const UserSchema = new mongoose.Schema({
     },
 
     profile_image_url_https: {//mongo media
-       
+        type: String,
+        trim: true,
     },
     
     follow_request_sent: [

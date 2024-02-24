@@ -5,7 +5,7 @@ const { mongoose } = require('../configs/dbConnection')
 
 const TweetSchema = new mongoose.Schema({
 
-    description: {
+    tweet: {
         type: String,
         trim: true,
         required: true,
@@ -26,39 +26,39 @@ const TweetSchema = new mongoose.Schema({
     //alinti
     quote_count:{
         type: Number,
+        default:0,
     },
+
+    replies:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Tweet"
+        }],
 
     reply_count:{
         type: Number,
+        default: function () {
+            return this.replies.length
+        }
     },
     
     retweet_count:{
         type: Number,
+        default:0,
     },
-    
+
+    favorites:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    },
+
     favorite_count:{
         type: Number,
+        default: function () {
+            return this.favorites.length
+        }
     },
 
-    entities: {
-        hashtags:{
-            type: String,
-            trim: true,
-        },
-        user_mentions:{
-            type: String,
-            trim: true,
-        },
-    },
-
-    replies:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Tweet"
-    }],
-
-    
-    
-       
 
 }, { collection: 'tweet', timestamps: true })
 
