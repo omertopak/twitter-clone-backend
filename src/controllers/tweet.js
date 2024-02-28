@@ -15,26 +15,65 @@ module.exports.Tweet = {
         })
     },
 
-    // FollowerTweets: async (req, res) => {
+    myTweets: async (req, res) => {
+        
+        const userId = req.user._id
+        const data = await Tweet.find({ user: userId }).sort({
+            createAt: -1,
+          });
+        
+        res.status(200).send({
+            error: false,
+            count: data.length,
+            result: data
+        })
+    },
 
-    //     const data = await Tweet.find()
+    followingTweets:async (req, res) => {
+        const userData = req.user
+        const followersTweets = await Promise.all(
+          userData.following.map((followerId) => {
+            return Tweet.find({ userId: followerId });
+          })
+        );
 
-    //     res.status(200).send({
-    //         error: false,
-    //         count: data.length,
-    //         result: data
-    //     })
-    // },
+        res.status(200).send({
+            error: false,
+            count: data.length,
+            result: followersTweets
+        })
+    },
     
     create: async (req, res) => {
-
-        const data = await Tweet.create(req.body)
-       
+        const tweet = req.body
+        tweet.user = req.user._id 
+        const data = await Tweet.create(tweet)
+        
 
         res.status(201).send({
         error: false,
         body: req.body,
         result: data,
+        })
+        
+        
+    },
+
+    createReply: async (req, res) => {
+        const tweetId = req.param.tweetId
+        const reply = req.body
+        reply.repliedTo = tweetId
+        reply.user = req.user._id 
+        const replyTweet = await Tweet.create(reply)
+
+        const repPushed = await Tweet.updateOne({ _id: tweetId }, { $push: { replies: replyTweet._id } }) 
+
+        const newTweet = await Tweet.findOne({ _id: tweetId }).populate('tweet')
+
+        res.status(201).send({
+        error: false,
+        body: reply,
+        result: newTweet,
         })
         
         

@@ -58,7 +58,7 @@ const UserSchema = new mongoose.Schema({
         default: true,
     },
 
-    follewers:[
+    followers:[
         {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User'
@@ -67,7 +67,7 @@ const UserSchema = new mongoose.Schema({
     followers_count: {
         type:Number,
         default:function () {
-            return this.follewers.length;
+            return this.followers.length;
         },
     },
 

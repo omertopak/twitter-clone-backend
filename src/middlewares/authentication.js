@@ -1,14 +1,12 @@
 "use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
+
 // app.use(authentication):
 
 const jwt = require('jsonwebtoken')
 
 module.exports = async (req, res, next) => {
 
-    const auth = req.headers?.authorization || null // Token ...tokenKey... // Bearer ...accessToken...
+    const auth = req.headers?.authorization || null // Bearer ...accessToken...
     const tokenKey = auth ? auth.split(' ') : null // ['Token', '...tokenKey...'] // ['Bearer', '...accessToken...']
 
     

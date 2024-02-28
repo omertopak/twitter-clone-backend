@@ -29,6 +29,11 @@ const TweetSchema = new mongoose.Schema({
         default:0,
     },
 
+    repliedTo:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Tweet"
+    },
+
     replies:[
         {
             type:mongoose.Schema.Types.ObjectId,
@@ -42,6 +47,18 @@ const TweetSchema = new mongoose.Schema({
         }
     },
     
+    tweet_viewers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:'User'
+    }],
+
+    tweet_view_count:{
+        type:Number,
+        default:function () {
+            return this.tweet_viewers.length;
+        },
+    },
+
     retweet_count:{
         type: Number,
         default:0,
