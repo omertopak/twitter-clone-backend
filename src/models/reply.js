@@ -16,5 +16,5 @@ const ModelSchema = new mongoose.Schema({
 
 }, { collection: 'model', timestamps: true })
 
-/* ------------------------------------------------------- */
+/* -------------------------------------------------------- */
 module.exports = mongoose.model('Model', ModelSchema)
