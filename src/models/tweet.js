@@ -23,11 +23,6 @@ const TweetSchema = new mongoose.Schema({
         ref:"User"
     },
 
-    //alinti
-    quote_count:{
-        type: Number,
-        default:0,
-    },
     // done
     repliedTo:{
         type:mongoose.Schema.Types.ObjectId,
@@ -46,23 +41,20 @@ const TweetSchema = new mongoose.Schema({
             return this.replies.length
         }
     },
-    // done
-    // reposted:{
-    //     type:Boolean,
-    //     default:false
-    // },
 
-    // reposted_by:[
-    //     {
-    //     type:mongoose.Schema.Types.ObjectId,
-    //     ref:"User"
-    // }
-    // ],
 
-    // repost_count:{
-    //     type: Number,
-    //     default:0,
-    // },
+    reposted_by:[
+        {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }
+    ],
+
+    repost_count:{
+        type: Number,
+        default:0,
+    },
+
     //done
     tweet_viewers: [{
         type: mongoose.Schema.Types.ObjectId,

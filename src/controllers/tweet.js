@@ -18,7 +18,7 @@ module.exports.Tweet = {
     myTweets: async (req, res) => {
         
         const userId = req.user._id
-        const data = await Tweet.find({ user: userId }).sort({
+        const data = await Tweet.find({$and: [{user: userId},{reposted_by:userId}] }).sort({
             createAt: -1,
           });
         
@@ -32,8 +32,13 @@ module.exports.Tweet = {
     followingTweets:async (req, res) => {
         const userData = req.user
         const followersTweets = await Promise.all(
-          userData.following.map((followerId) => {
-            return Tweet.find({ userId: followerId });
+          userData.following.map((followingId) => {
+            return Tweet.find({ $and: 
+                [{user: followingId},
+                {reposted_by:followingId}] })
+                .sort({
+                    createAt: -1,
+                  });
           })
         );
 
@@ -65,7 +70,7 @@ module.exports.Tweet = {
         reply.user = req.user._id 
         const replyTweet = await Tweet.create(reply)
 
-        const repPushed = await Tweet.updateOne({ _id: tweetId }, { $push: { replies: replyTweet._id } }) 
+        const rePushed = await Tweet.updateOne({ _id: tweetId }, { $push: { replies: replyTweet._id } }) 
 
         const newTweet = await Tweet.findOne({ _id: tweetId }).populate('tweet')
 
@@ -73,22 +78,34 @@ module.exports.Tweet = {
         error: false,
         result: newTweet,
         })
-        
-        
     },
 
-    // createRepost: async (req, res) => {
-    //     const user_id = req.user._id
-    //     const tweetId = req.param.tweetId
-    //     await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { reposted_by: user_id} })
-    //     const data = await Tweet.findOne({ _id: req.params.tweetId })
-    //     const repostedTweet = await Tweet.create(repost)
+    createRepost: async (req, res) => {
+        let message = ""
+        const user_id = req.user._id
+        const tweetId = req.param.tweetId
+        const check = await Tweet.findOne({_id: tweetId, reposted_by :user_id})
+        
+        if(check){
+            await Tweet.updateOne({ _id: tweetId },{ $pull: { reposted_by: user_id} })
+            message = "you undo your retweet."
+        }else{
+            await Tweet.updateOne({ _id: tweetId },{ $push: { reposted_by: user_id} })
+            message = "you retweeted."
+        }
 
-    //     res.status(201).send({
-    //     error: false,
-    //     result: repostedTweet,
-    //     })
-    // },
+        const result = await Blog.findOne({ _id: tweet_id })
+        res.status(202).send({
+            error: false,
+            message:message,
+            result: result,
+            
+        })
+        res.status(201).send({
+        error: false,
+        result: repostedTweet,
+        })
+    },
 
     read: async (req, res) => {
 
