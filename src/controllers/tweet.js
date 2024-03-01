@@ -79,12 +79,27 @@ module.exports.Tweet = {
         
     },
 
+    createRepost: async (req, res) => {
+        const user_id = req.user._id
+        const tweetId = req.param.tweetId
+        await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { reposted_by: user_id} })
+        const data = await Tweet.findOne({ _id: req.params.tweetId })
+        const repostedTweet = await Tweet.create(repost)
+
+        res.status(201).send({
+        error: false,
+        result: repostedTweet,
+        })
+    },
+
     read: async (req, res) => {
 
-        // req.params.tweetId
-        // const data = await Tweet.findById(req.params.tweetId)
-        const data = await Tweet.findOne({ _id: req.params.tweetId })
+        const user_id = req.user._id
 
+        await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { tweet_viewers: user_id} })
+        
+        const data = await Tweet.findOne({ _id: req.params.tweetId })
+        
         res.status(200).send({
             error: false,
             result: data
@@ -93,18 +108,18 @@ module.exports.Tweet = {
     },
     
     //update yok
-    update: async (req, res) => {
+    // update: async (req, res) => {
         
-        // const data = await Tweet.findByIdAndUpdate(req.params.tweetId, req.body, { new: true }) // return new-data
-        await Tweet.updateOne({ _id: req.params.tweetId }, req.body, { runValidators: true })
-        const data = await Tweet.findOne({ _id: req.params.tweetId })
+    //     // const data = await Tweet.findByIdAndUpdate(req.params.tweetId, req.body, { new: true }) // return new-data
+    //     await Tweet.updateOne({ _id: req.params.tweetId }, req.body, { runValidators: true })
+    //     const data = await Tweet.findOne({ _id: req.params.tweetId })
 
-        res.status(202).send({
-            error: false,
-            result: data, 
-        })
+    //     res.status(202).send({
+    //         error: false,
+    //         result: data, 
+    //     })
 
-    },
+    // },
 
     delete: async (req, res) => {
         

@@ -12,12 +12,12 @@ const TweetSchema = new mongoose.Schema({
         unique: true
     },
 
-    image: { // cahange URL to mongoMedia 
+    image: { // change URL to mongoMedia 
         type: String,
         trim: true
     },
     
-    
+    //done
     user: {
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
@@ -28,30 +28,47 @@ const TweetSchema = new mongoose.Schema({
         type: Number,
         default:0,
     },
-
+    // done
     repliedTo:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Tweet"
     },
-
+    //done
     replies:[
         {
             type:mongoose.Schema.Types.ObjectId,
             ref:"Tweet"
         }],
-
+    //done
     reply_count:{
         type: Number,
         default: function () {
             return this.replies.length
         }
     },
-    
+    // done
+    // reposted:{
+    //     type:Boolean,
+    //     default:false
+    // },
+
+    reposted_by:[
+        {
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }
+    ],
+
+    repost_count:{
+        type: Number,
+        default:0,
+    },
+    //done
     tweet_viewers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref:'User'
     }],
-
+    //done
     tweet_view_count:{
         type:Number,
         default:function () {
@@ -59,10 +76,7 @@ const TweetSchema = new mongoose.Schema({
         },
     },
 
-    retweet_count:{
-        type: Number,
-        default:0,
-    },
+    
 
     favorites:{
         type: mongoose.Schema.Types.ObjectId,
