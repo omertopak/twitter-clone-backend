@@ -52,7 +52,6 @@ module.exports.Tweet = {
 
         res.status(201).send({
         error: false,
-        body: req.body,
         result: data,
         })
         
@@ -72,25 +71,24 @@ module.exports.Tweet = {
 
         res.status(201).send({
         error: false,
-        body: reply,
         result: newTweet,
         })
         
         
     },
 
-    createRepost: async (req, res) => {
-        const user_id = req.user._id
-        const tweetId = req.param.tweetId
-        await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { reposted_by: user_id} })
-        const data = await Tweet.findOne({ _id: req.params.tweetId })
-        const repostedTweet = await Tweet.create(repost)
+    // createRepost: async (req, res) => {
+    //     const user_id = req.user._id
+    //     const tweetId = req.param.tweetId
+    //     await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { reposted_by: user_id} })
+    //     const data = await Tweet.findOne({ _id: req.params.tweetId })
+    //     const repostedTweet = await Tweet.create(repost)
 
-        res.status(201).send({
-        error: false,
-        result: repostedTweet,
-        })
-    },
+    //     res.status(201).send({
+    //     error: false,
+    //     result: repostedTweet,
+    //     })
+    // },
 
     read: async (req, res) => {
 
@@ -105,6 +103,29 @@ module.exports.Tweet = {
             result: data
         })
 
+    },
+
+    fav : async (req, res) => {
+        let message = ""
+        const user_id = req.user?._id
+        const tweet_id = req.params?.tweetId
+        const check = await Tweet.findOne({_id: tweet_id, favorites :user_id})
+        
+        if(check){
+            await Tweet.Blog.updateOne({ _id: tweet_id }, { $pull: { favorites: user_id } })
+            message = "you disliked a post"
+        }else{
+            await Tweet.Blog.updateOne({ _id: tweet_id }, { $push: { favorites: user_id } })
+            message = "you liked a post"
+        }
+        
+        const result = await Blog.findOne({ _id: tweet_id })
+        res.status(202).send({
+            error: false,
+            message:message,
+            result: result,
+            
+        })
     },
     
     //update yok
@@ -127,7 +148,7 @@ module.exports.Tweet = {
 
         res.sendStatus( (data.deletedCount >= 1) ? 204 : 404 ).send({
             error:!data.deletedCount,
-            data
+            result:data
         })
 
     },
