@@ -15,9 +15,23 @@ module.exports.Tweet = {
         })
     },
 
-    myTweets: async (req, res) => {
+    create: async (req, res) => {
+        const tweet = req.body
+        tweet.user = req.user._id 
+        const data = await Tweet.create(tweet)
         
-        const userId = req.user._id
+
+        res.status(201).send({
+        error: false,
+        result: data,
+        })
+        
+        
+    },
+
+    anyUserTweets: async (req, res) => {
+        
+        const userId = req.params.userId
         const data = await Tweet.find({$and: [{user: userId},{reposted_by:userId}] }).sort({
             createAt: -1,
           });
@@ -49,19 +63,7 @@ module.exports.Tweet = {
         })
     },
     
-    create: async (req, res) => {
-        const tweet = req.body
-        tweet.user = req.user._id 
-        const data = await Tweet.create(tweet)
-        
-
-        res.status(201).send({
-        error: false,
-        result: data,
-        })
-        
-        
-    },
+    
 
     createReply: async (req, res) => {
         const tweetId = req.param.tweetId
@@ -70,7 +72,7 @@ module.exports.Tweet = {
         reply.user = req.user._id 
         const replyTweet = await Tweet.create(reply)
 
-        const rePushed = await Tweet.updateOne({ _id: tweetId }, { $push: { replies: replyTweet._id } }) 
+        await Tweet.updateOne({ _id: tweetId }, { $push: { replies: replyTweet._id } }) 
 
         const newTweet = await Tweet.findOne({ _id: tweetId }).populate('tweet')
 
@@ -94,16 +96,13 @@ module.exports.Tweet = {
             message = "you retweeted."
         }
 
-        const result = await Blog.findOne({ _id: tweet_id })
+        const result = await Blog.findOne({ _id: tweetId })
+        
         res.status(202).send({
             error: false,
             message:message,
             result: result,
             
-        })
-        res.status(201).send({
-        error: false,
-        result: repostedTweet,
         })
     },
 

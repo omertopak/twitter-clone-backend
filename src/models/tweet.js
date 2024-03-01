@@ -52,7 +52,9 @@ const TweetSchema = new mongoose.Schema({
 
     repost_count:{
         type: Number,
-        default:0,
+        default:function () {
+            return this.reposted_by.length;
+        },
     },
 
     //done
