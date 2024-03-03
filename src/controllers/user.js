@@ -31,9 +31,9 @@ module.exports.User = {
 
     read: async (req, res) => {
 
-        // req.params.userId
+        const userId = req.params.userId
         // const data = await User.findById(req.params.userId)
-        const data = await User.findOne({ _id: req.params.userId })
+        const data = await User.findOne({ _id: userId })
 
         res.status(200).send({
             error: false,
@@ -65,4 +65,33 @@ module.exports.User = {
         })
 
     },
+    //follow-unfollow
+    follow: async (req, res) => {
+        //user
+        const user = req.params.userId
+        //currentUser
+        const currentUser = req.user._id
+        let message = ''
+        if (!user.followers.includes(currentUser)) {
+            await user.updateOne({
+              $push: { followers: currentUser },
+            });
+            await currentUser.updateOne({ $push: { following: user } });
+            message = `you followed ${user.username}`
+          } else {
+            await user.updateOne({
+                $pull: { followers: currentUser },
+              });
+              await currentUser.updateOne({ $pull: { following: user } });
+              message = `you unfollowed ${user.username}`
+          }
+          
+          res.status(202).send({
+            error: false,
+            result: message, 
+        })
+
+    },
+
+    
 }

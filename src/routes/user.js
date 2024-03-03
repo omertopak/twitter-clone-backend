@@ -6,12 +6,12 @@ const router = require('express').Router()
 const { User } = require('../controllers/user')
 
 //PERMISSION LIST ADMIN
-router.route('/')
+router.route('/') //admin
     .get(User.list)
 router.post('/register', User.create) 
 router.route('/:userId')
-    .get(User.read)
-    .put(User.update)
-    .delete(User.delete)
+    .get(User.read) //herkes
+    .put(User.update) //user
+    .delete(User.delete) //user
 
 module.exports = router

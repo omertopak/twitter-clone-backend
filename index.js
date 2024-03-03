@@ -22,12 +22,14 @@ app.use(express.json())
 //! req.user datasini yolladik
 app.use(require('./src/middlewares/authentication'))
 
+/* ------------------------------------------------------- */
 // Routes:
 // app.use(require('./src/routes'))
-app.use('/users', require('./src/routes/user'))
 app.use('/users/auth', require('./src/routes/auth'))
-/* ------------------------------------------------------- */
+app.use('/tweets/', require('./src/routes/tweet'))
+app.use('/users', require('./src/routes/user'))
 
+/* ------------------------------------------------------- */
 app.use(require('./src/middlewares/errorHandler'))
 /* ------------------------------------------------------- */
 app.listen(PORT, () => console.log("Running: http://127.0.0.1:" + PORT));
