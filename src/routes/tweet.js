@@ -18,13 +18,10 @@ router.route('/:tweetId')
     .get(Tweet.read)
     .put(Tweet.createReply)
     .update(Tweet.createRepost)
+    .delete(Tweet.delete)
 router.route('/like/:tweetId')    
     .put(Tweet.fav)
 
-
-router.put('/pushComments/:tweetId')
-router.put('/pullComments/:tweetId')
-router.put('/likes/:tweetId')
 
 // ------------------------------------------
 // TweetPost
