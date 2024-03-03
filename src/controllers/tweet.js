@@ -15,6 +15,17 @@ module.exports.Tweet = {
         })
     },
 
+    listUser:async (req, res) => {
+        const userId = req.params.userId
+        const data = await Tweet.find({user:userId})
+
+        res.status(200).send({
+            error: false,
+            count: data.length,
+            result: data
+        })
+    },
+
     create: async (req, res) => {
         const tweet = req.body
         tweet.user = req.user._id 
@@ -30,15 +41,17 @@ module.exports.Tweet = {
 
     anyUserTweets: async (req, res) => {
         
-        const userId = req.params.userId
-        const data = await Tweet.find({$and: [{user: userId},{reposted_by:userId}] }).sort({
-            createAt: -1,
-          });
-        
+        //const userId = req.params.userId
+        // const data = await Tweet.find({$and: [{user: userId},{reposted_by:userId}] }).sort({
+        //     createAt: -1,
+        //   });
+
+        const data = await Tweet.find()
+        const forYou = data.filter((tweet)=>tweet.user.private==false)
         res.status(200).send({
             error: false,
             count: data.length,
-            result: data
+            result: forYou
         })
     },
 
