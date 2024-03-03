@@ -26,7 +26,6 @@ module.exports.Tweet = {
         result: data,
         })
         
-        
     },
 
     anyUserTweets: async (req, res) => {
@@ -96,7 +95,7 @@ module.exports.Tweet = {
             message = "you retweeted."
         }
 
-        const result = await Blog.findOne({ _id: tweetId })
+        const result = await Tweet.findOne({ _id: tweetId })
         
         res.status(202).send({
             error: false,
@@ -128,14 +127,14 @@ module.exports.Tweet = {
         const check = await Tweet.findOne({_id: tweet_id, favorites :user_id})
         
         if(check){
-            await Tweet.Blog.updateOne({ _id: tweet_id }, { $pull: { favorites: user_id } })
+            await Tweet.updateOne({ _id: tweet_id }, { $pull: { favorites: user_id } })
             message = "you disliked a post"
         }else{
-            await Tweet.Blog.updateOne({ _id: tweet_id }, { $push: { favorites: user_id } })
+            await Tweet.updateOne({ _id: tweet_id }, { $push: { favorites: user_id } })
             message = "you liked a post"
         }
         
-        const result = await Blog.findOne({ _id: tweet_id })
+        const result = await Tweet.findOne({ _id: tweet_id })
         res.status(202).send({
             error: false,
             message:message,
