@@ -26,8 +26,8 @@ app.use(require('./src/middlewares/authentication'))
 // Routes:
 // app.use(require('./src/routes'))
 app.use('/users/auth', require('./src/routes/auth'))
-app.use('/tweets/', require('./src/routes/tweet'))
-app.use('/users', require('./src/routes/user'))
+app.use('/tweets', require('./src/routes/tweet'))
+app.use('/user', require('./src/routes/user'))
 
 /* ------------------------------------------------------- */
 app.use(require('./src/middlewares/errorHandler'))

@@ -8,7 +8,8 @@ const { User } = require('../controllers/user')
 
 router.route('/') //admin
     .get(User.list)
-router.post('/register', User.create) 
+router.route('/register')
+    .post(User.create) 
 router.route('/:userId')
     .get(User.read) //herkes
     .put(User.update) //user
