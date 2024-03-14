@@ -12,7 +12,7 @@ const TweetSchema = new mongoose.Schema({
         unique: true
     },
 
-    image: { // change URL to mongoMedia .
+    image: { // change URL to mongoMedia ..
         type: String,
         trim: true
     },
