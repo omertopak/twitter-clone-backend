@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 8000;
 //error handler
 require('express-async-errors')
 /* ------------------------------------------------------- */
-require('./src/configs/dbConnection')
+//!---------------------------------AC
+// require('./src/configs/dbConnection')
 /* ------------------------------------------------------- */
 app.use(express.json())
 
