@@ -11,16 +11,12 @@ const PORT = process.env.PORT || 8000;
 require('express-async-errors')
 /* ------------------------------------------------------- */
 //!---------------------------------AC
-// require('./src/configs/dbConnection')
+require('./src/configs/dbConnection')
 /* ------------------------------------------------------- */
 app.use(express.json())
 
 
-
 // app.use(require('./src/middlewares/authentication'))
-
-
-
 
 app.get('/', function (req, res) {
     res.send(' --TWITTER API--'); // This will serve your request to '/'.
