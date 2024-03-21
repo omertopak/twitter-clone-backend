@@ -7,7 +7,7 @@ module.exports = {
     create: async (req, res) => {
 
         const data = await Notification.create(req.body)
-        // const data = req.bod
+        // const data = req.body
        
 
         res.status(201).send({
