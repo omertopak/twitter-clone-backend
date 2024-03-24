@@ -17,7 +17,7 @@ const TweetSchema = new mongoose.Schema({
         trim: true
     },
     
-    //done.
+    //done
     user: {
         type:mongoose.Schema.Types.ObjectId,
         ref:"User"
