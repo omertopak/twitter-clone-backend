@@ -14,7 +14,7 @@ module.exports = {
 
         if ( email && password) {
 
-            const user = await User.findOne({ username  })
+            const user = await User.findOne({ email:email  })
 
             if (user && user.password == passwordEncrypt(password)) {
 
@@ -95,12 +95,12 @@ module.exports = {
         let message  = 'Successfully logged out.'
         // const refreshToken = req.body?.bearer?.refreshToken
 
-        jwt.destroy(refreshToken)
+        // jwt.destroy(refreshToken)
 
         res.send({
             error: false,
             message,
-            result
+            // result
         })
     },
 }
