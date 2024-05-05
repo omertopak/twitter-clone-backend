@@ -2,7 +2,7 @@
 
 // const { mongoose } = require('../configs/dbConnection')
 const mongoose = require('mongoose')
-// const passwordEncrypt = require('../helpers/passwordEncrypt')
+const passwordEncrypt = require('../helpers/passwordEncrypt')
 
 const UserSchema = new mongoose.Schema({
 
@@ -17,100 +17,100 @@ const UserSchema = new mongoose.Schema({
         required: true,
     },
 
-    // username:{ 
-    //     type: String,
-    //     trim: true,
-    //     required: true,
-    //     unique: true
-    // },
+    username:{ 
+        type: String,
+        trim: true,
+        required: true,
+        unique: true
+    },
 
-    // email:{
-    //     type: String,
-    //     trim: true,
-    //     required: [true, 'Email field must be required'],
-    //     unique: [true, 'There is this email. Email field must be unique'],
-    //     validate: [
-    //         (email) => email.includes('@') && email.includes('.'),
-    //         'Email type is not correct.'
-    //     ]
-    // },
+    email:{
+        type: String,
+        trim: true,
+        required: [true, 'Email field must be required'],
+        unique: [true, 'There is this email. Email field must be unique'],
+        validate: [
+            (email) => email.includes('@') && email.includes('.'),
+            'Email type is not correct.'
+        ]
+    },
 
-    // password: {
-    //     type: String,
-    //     trim: true,
-    //     required: true,
-    //     set: (password) => passwordEncrypt(password)
-    // },
+    password: {
+        type: String,
+        trim: true,
+        required: true,
+        set: (password) => passwordEncrypt(password)
+    },
 
 
-    // blue_tick:{
-    //     type: Boolean,
-    //     default: false,
-    // },
+    blue_tick:{
+        type: Boolean,
+        default: false,
+    },
     
 
-    // bio: {
-    //     type: String,
-    //     trim: true,
-    // },
+    bio: {
+        type: String,
+        trim: true,
+    },
 
-    // private: {
-    //     type: Boolean,
-    //     default: true,
-    // },
+    private: {
+        type: Boolean,
+        default: true,
+    },
 
-    // followers:[
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'User'
-    //        }
-    //     ],
-    // followers_count: {
-    //     type:Number,
-    //     default:function () {
-    //         return this.followers.length;
-    //     },
-    // },
+    followers:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+           }
+        ],
+    followers_count: {
+        type:Number,
+        default:function () {
+            return this.followers.length;
+        },
+    },
 
-    // following:[
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'User'
-    //        }
-    //     ],
+    following:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+           }
+        ],
 
-    // following_count: {
-    //     type:Number,
-    //     default:function () {
-    //         return this.following.length;
-    //     },
-    // },
+    following_count: {
+        type:Number,
+        default:function () {
+            return this.following.length;
+        },
+    },
 
-    // profile_image_url_https: {//mongo media
-    //     type: String,
-    //     trim: true,
-    // },
+    profile_image_url_https: {//mongo media
+        type: String,
+        trim: true,
+    },
     
-    // follow_request_sent: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'User'
-    //        }
-    //     ],
+    follow_request_sent: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User'
+           }
+        ],
 
-    // notifications: [
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Notification'
-    //        }
-    //     ],
+    notifications: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Notification'
+           }
+        ],
 
-    // bookmarks:[
-    //     {
-    //         type: mongoose.Schema.Types.ObjectId,
-    //         ref: 'Tweet'
-    //        }
-    //     ],
+    bookmarks:[
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Tweet'
+           }
+        ],
        
 }, { collection: 'users', timestamps: true })
 

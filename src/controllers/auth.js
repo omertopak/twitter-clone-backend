@@ -93,7 +93,7 @@ module.exports = {
     logout: async (req, res) => {
        
         let message  = 'Successfully logged out.'
-        const refreshToken = req.body?.bearer?.refreshToken
+        // const refreshToken = req.body?.bearer?.refreshToken
 
         jwt.destroy(refreshToken)
 
