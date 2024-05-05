@@ -1,6 +1,7 @@
 "use strict"
 
 const Tweet = require('../models/tweet')
+const user = require('../models/user')
 
 module.exports.Tweet = {
 
@@ -58,8 +59,12 @@ module.exports.Tweet = {
 
     followingTweets:async (req, res) => {
         const userData = req.user
-        const followersTweets = await Promise.all(
-          userData.following.map((followingId) => {
+        console.log(req.user);
+        const followersTweets=[]
+        console.log("following",userData.following_count);
+        if(userData.following_count>0){
+        followersTweets = await Promise.all(
+          userData.following?.map((followingId) => {
             return Tweet.find({ $and: 
                 [{user: followingId},
                 {reposted_by:followingId}] })
@@ -67,11 +72,11 @@ module.exports.Tweet = {
                     createAt: -1,
                   });
           })
-        );
+        );}
 
         res.status(200).send({
             error: false,
-            count: data.length,
+            count: followersTweets.length,
             result: followersTweets
         })
     },
