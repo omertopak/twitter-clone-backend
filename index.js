@@ -16,7 +16,7 @@ require('./src/configs/dbConnection')
 app.use(express.json())
 
 
-// app.use(require('./src/middlewares/authentication'))
+app.use(require('./src/middlewares/authentication'))
 
 app.get('/', function (req, res) {
     res.send(' --TWITTER API--'); // This will serve your request to '/'.

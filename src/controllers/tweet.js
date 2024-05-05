@@ -28,6 +28,7 @@ module.exports.Tweet = {
 
     create: async (req, res) => {
         const tweet = req.body
+        console.log("user",req.user);
         tweet.user = req.user._id 
         const data = await Tweet.create(tweet)
         
