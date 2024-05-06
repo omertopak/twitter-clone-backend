@@ -39,7 +39,10 @@ const TweetSchema = new mongoose.Schema({
         type: Number,
         default: function () {
             return this.replies.length
-        }
+        },
+        transform: function () {
+            return this.replies.length;
+        },
     },
 
 
@@ -55,6 +58,9 @@ const TweetSchema = new mongoose.Schema({
         default:function () {
             return this.reposted_by.length;
         },
+        transform: function () {
+            return this.reposted_by.length;
+        },
     },
 
     //done
@@ -68,10 +74,11 @@ const TweetSchema = new mongoose.Schema({
         default:function () {
             return this.tweet_viewers.length;
         },
+        transform: function () {
+            return this.tweet_viewers.length;
+        },
     },
-
     
-
     favorites:[{
         type: mongoose.Schema.Types.ObjectId,
         ref:"User"
@@ -81,12 +88,13 @@ const TweetSchema = new mongoose.Schema({
         type: Number,
         default: function () {
             return this.favorites.length
-        }
+        },transform: function () {
+            return this.favorites.length;
+        },
     },
 
 
 }, { collection: 'tweet', timestamps: true })
-
 
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('Tweet', TweetSchema)
