@@ -14,7 +14,7 @@ router.route('/timeline') //kullanici timeline main
     .get(Tweet.followingTweets)
 router.route('/timeline2') //kullanici for you
     .get(Tweet.anyUserTweets)
-router.route('/user/:userId')
+    router.route('/user/:userId')
     .get(Tweet.listUser)
 router.route('/:tweetId')
     .get(Tweet.read)

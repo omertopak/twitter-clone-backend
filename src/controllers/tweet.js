@@ -3,6 +3,13 @@
 const Tweet = require('../models/tweet')
 const user = require('../models/user')
 
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
 module.exports.Tweet = {
 
     list: async (req, res) => {
@@ -48,12 +55,20 @@ module.exports.Tweet = {
         //     createAt: -1,
         //   });
 
-        const data = await Tweet.find()
-        const forYou = data.filter((tweet)=>tweet.user.private==false)
+        const data = await Tweet.find().populate("user")
+        const forYou = data.filter((tweet) => {
+            // Kullanıcı tanımlıysa ve private özelliği false ise true döndürür
+            return tweet.user && tweet.user.private === false;
+          });
+        // const forYou = data.filter((tweet)=>tweet.user.private==false)
+        // const forYou = data.filter((tweet)=>console.log(tweet.user.private))
+        const shuffledData = shuffleArray(forYou);
+        const random20Items = shuffledData.slice(0, 20);
+        
         res.status(200).send({
             error: false,
-            count: data.length,
-            result: forYou
+            count: random20Items.length,
+            result: random20Items
         })
     },
 
@@ -76,7 +91,7 @@ module.exports.Tweet = {
 
         res.status(200).send({
             error: false,
-            count: followersTweets.length,
+            // count: followersTweets.length,
             result: followersTweets
         })
     },
