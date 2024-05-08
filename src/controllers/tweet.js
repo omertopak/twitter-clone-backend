@@ -99,15 +99,17 @@ module.exports.Tweet = {
     
 
     createReply: async (req, res) => {
-        const tweetId = req.param.tweetId
-        const reply = req.body
-        reply.repliedTo = tweetId
+        const tweet_id = req.params?.tweetId
+        const reply = {}
+        reply.tweet = req.body.tweet
+        reply.repliedTo = tweet_id
         reply.user = req.user._id 
+        // console.log(reply)
         const replyTweet = await Tweet.create(reply)
 
-        await Tweet.updateOne({ _id: tweetId }, { $push: { replies: replyTweet._id } }) 
+        await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: replyTweet._id } }) 
 
-        const newTweet = await Tweet.findOne({ _id: tweetId }).populate('tweet')
+        const newTweet = await Tweet.findOne({ _id: tweet_id })
 
         res.status(201).send({
         error: false,
