@@ -118,18 +118,19 @@ module.exports.Tweet = {
     createRepost: async (req, res) => {
         let message = ""
         const user_id = req.user._id
-        const tweetId = req.param.tweetId
-        const check = await Tweet.findOne({_id: tweetId, reposted_by :user_id})
+        const tweet_id = req.params?.tweetId
+        console.log("user  tweet",user_id,tweet_id);
+        const check = await Tweet.findOne({_id: tweet_id, reposted_by :user_id})
         
         if(check){
-            await Tweet.updateOne({ _id: tweetId },{ $pull: { reposted_by: user_id} })
+            await Tweet.updateOne({ _id: tweet_id },{ $pull: { reposted_by: user_id} })
             message = "you undo your retweet."
         }else{
-            await Tweet.updateOne({ _id: tweetId },{ $push: { reposted_by: user_id} })
+            await Tweet.updateOne({ _id: tweet_id },{ $push: { reposted_by: user_id} })
             message = "you retweeted."
         }
 
-        const result = await Tweet.findOne({ _id: tweetId })
+        const result = await Tweet.findOne({ _id: tweet_id })
         
         res.status(202).send({
             error: false,
