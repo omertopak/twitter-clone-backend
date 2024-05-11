@@ -179,29 +179,29 @@ module.exports.Tweet = {
             
         })
     },
-    //
-    //update yok
-    // update: async (req, res) => {
-        
-    //     // const data = await Tweet.findByIdAndUpdate(req.params.tweetId, req.body, { new: true }) // return new-data
-    //     await Tweet.updateOne({ _id: req.params.tweetId }, req.body, { runValidators: true })
-    //     const data = await Tweet.findOne({ _id: req.params.tweetId })
-
-    //     res.status(202).send({
-    //         error: false,
-    //         result: data, 
-    //     })
-
-    // },
-
+   
+    
     delete: async (req, res) => {
         
-        const data = await Tweet.deleteOne({ _id: req.params.tweetId })
+        const user_id = req.user?._id
+        const tweet = await Tweet.findOne({_id: req.params?.tweetId})
+        const tweet_user = tweet.user
+        let message = ''
 
-        res.sendStatus( (data.deletedCount >= 1) ? 204 : 404 ).send({
-            error:!data.deletedCount,
-            result:data
+        if(tweet){
+            if(user_id == tweet_user){
+                await Tweet.deleteOne({ _id: req.params.tweetId })
+                message="deleted"
+            }else{
+                message="unauthorized"
+            }
+        }else{
+            message="tweet not found"
+        }
+       
+        res.status(202).send({
+            error: false,
+            message:message,
         })
-
     },
 }
