@@ -86,7 +86,7 @@ const UserSchema = new mongoose.Schema({
         },
     },
 
-    profile_image_url_https: {//mongo media
+    image: {//mongo media
         type: String,
         trim: true,
     },
