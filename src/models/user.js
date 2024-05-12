@@ -90,6 +90,11 @@ const UserSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+
+    background:{
+        type: String,
+        trim: true,
+    },
     
     follow_request_sent: [
         {
@@ -98,12 +103,6 @@ const UserSchema = new mongoose.Schema({
            }
         ],
 
-    notifications: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'Notification'
-           }
-        ],
 
     bookmarks:[
         {
