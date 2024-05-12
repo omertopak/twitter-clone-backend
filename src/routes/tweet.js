@@ -23,6 +23,8 @@ router.route('/:tweetId')
     .delete(Tweet.delete) //sadece twit sahibi yapar
 router.route('/:tweetId/like')    
     .put(Tweet.fav)
+router.route('/:tweetId/bookmark')    
+    .put(Tweet.bookmark)
 
 
 // ------------------------------------------

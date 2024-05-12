@@ -31,7 +31,6 @@ app.get('/', function (req, res) {
 app.use('/auth', require('./src/routes/auth'))
 app.use('/tweets', require('./src/routes/tweet'))
 app.use('/user', require('./src/routes/user'))
-app.use('/notif', require('./src/routes/notification'))
 
 /* ------------------------------------------------------- */
 app.use(require('./src/middlewares/errorHandler'))

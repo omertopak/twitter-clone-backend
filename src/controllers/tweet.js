@@ -1,7 +1,7 @@
 "use strict"
 
 const Tweet = require('../models/tweet')
-const user = require('../models/user')
+const User = require('../models/user')
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -180,6 +180,25 @@ module.exports.Tweet = {
         })
     },
    
+    bookmark : async (req, res) => {
+        let message = ""
+        const user_id = req.user?._id
+        const tweet_id = req.params?.tweetId
+        const check = await User.findOne({_id: user_id, bookmark :tweet_id})
+        
+        if(check){
+            await User.updateOne({ _id: user_id }, { $pull: { bookmark: tweet_id } })
+            message = "you removed a post from your bookmarks"
+        }else{
+            await User.updateOne({ _id: user_id }, { $push: { bookmark: tweet_id } })
+            message = "you added a post to your bookmarks"
+        }
+        
+        res.status(202).send({
+            error: false,
+            message:message,
+        })
+    },
     
     delete: async (req, res) => {
         
