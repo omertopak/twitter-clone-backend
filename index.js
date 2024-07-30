@@ -3,7 +3,20 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
+// MULTER -------
+const multer  = require('multer')
+// multer storage confiq
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, './uploads')
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+})
 
+const upload = multer({ storage: storage })
+// -----------------
 require("dotenv").config();
 
 app.use(cors())
@@ -16,6 +29,12 @@ require('express-async-errors')
 require('./src/configs/dbConnection')
 /* ------------------------------------------------------- */
 app.use(express.json())
+
+// MULTER
+app.post('/api/upload',upload.single('file'),(req,res)=>{
+  res.json(req.file);
+  // res.send('done')
+})
 
 
 app.use(require('./src/middlewares/authentication'))
