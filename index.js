@@ -3,55 +3,51 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
-// MULTER -------
-const multer  = require('multer')
-// multer storage confiq
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './uploads')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
-
-const upload = multer({ storage: storage })
-// -----------------
+const upload = require('./src/middlewares/multer'); 
+const User = require("./src/models/user");
 require("dotenv").config();
 
-app.use(cors())
+app.use(cors());
 
 const PORT = process.env.PORT || 8000;
-//error handler
-require('express-async-errors')
-/* ------------------------------------------------------- */
-//!---------------------------------AC
-require('./src/configs/dbConnection')
-/* ------------------------------------------------------- */
-app.use(express.json())
-
-// MULTER
-app.post('/api/upload',upload.single('file'),(req,res)=>{
-  res.json(req.file);
-  // res.send('done')
-})
-
-
-app.use(require('./src/middlewares/authentication'))
+require('express-async-errors');
+require('./src/configs/dbConnection');
+app.use(express.json());
+app.use(require('./src/middlewares/authentication'));
 
 app.get('/', function (req, res) {
-    res.send(' --TWITTER API--'); // This will serve your request to '/'.
-  });
+  res.send(' --TWITTER API--');
+});
 
-  /* ------------------------------------------------------- */
+app.use('/auth', require('./src/routes/auth'));
+app.use('/tweets', require('./src/routes/tweet'));
+app.use('/user', require('./src/routes/user'));
 
-// Routes:
-// app.use(require('./src/routes'))
-app.use('/auth', require('./src/routes/auth'))
-app.use('/tweets', require('./src/routes/tweet'))
-app.use('/user', require('./src/routes/user'))
+app.post('/api/register', upload.single('image'), async (req, res) => {
+  try {
+    console.log('Request body:', req.body);
+    console.log('Uploaded file:', req.file);
 
-/* ------------------------------------------------------- */
-app.use(require('./src/middlewares/errorHandler'))
-/* ------------------------------------------------------- */
-app.listen(PORT, () => console.log('http://127.0.0.1:' + PORT))
+    const { username, first_name, last_name, email, password } = req.body;
+    const image = req.file ? req.file.path : null; 
+
+    const newUser = new User({
+      username,
+      first_name,
+      last_name,
+      email,
+      password,
+      image,
+    });
+
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    console.error('Error registering user:', error);
+    res.status(500).send('Error registering user.');
+  }
+});
+
+app.use(require('./src/middlewares/errorHandler'));
+
+app.listen(PORT, () => console.log('http://127.0.0.1:' + PORT));
