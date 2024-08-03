@@ -11,10 +11,10 @@ const TweetSchema = new mongoose.Schema({
         required: true,
     },
 
-    image: { // change URL to mongoMedia 
-        type: String,
-        trim: true
-    },
+    images: {
+        type: [String], // Bu alan bir dizi olup, her eleman String olmalıdır
+        validate: [arrayLimit, '{PATH} exceeds the limit of 4']
+      },
     
     //done
     user: {
@@ -94,6 +94,10 @@ const TweetSchema = new mongoose.Schema({
 
 
 }, { collection: 'tweet', timestamps: true })
+
+function arrayLimit(val) {
+    return val.length <= 4;
+  }
 
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('Tweet', TweetSchema)
