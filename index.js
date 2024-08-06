@@ -1,15 +1,16 @@
 "use strict";
-
 const express = require("express");
 const cors = require('cors');
 const app = express();
-const upload = require('./src/middlewares/multer'); 
 const User = require("./src/models/user");
+const upload = require("./src/middlewares/multer");
+
 require("dotenv").config();
-const Tweet = require("./src/models/tweet")
 app.use(cors());
 
+
 const PORT = process.env.PORT || 8000;
+
 require('express-async-errors');
 require('./src/configs/dbConnection');
 app.use(express.json());
@@ -23,7 +24,7 @@ app.use('/auth', require('./src/routes/auth'));
 app.use('/tweets', require('./src/routes/tweet'));
 app.use('/user', require('./src/routes/user'));
 
-app.post('/api/register', upload.single('image'), async (req, res) => {
+app.post('/upload', upload.single('file'), async (req, res) => {
   try {
     console.log('Request body:', req.body);
     console.log('Uploaded file:', req.file);
@@ -39,7 +40,7 @@ app.post('/api/register', upload.single('image'), async (req, res) => {
       password,
       image,
     });
-
+    console.log(newUser);
     await newUser.save();
     res.status(201).json(newUser);
   } catch (error) {
@@ -47,28 +48,6 @@ app.post('/api/register', upload.single('image'), async (req, res) => {
     res.status(500).send('Error registering user.');
   }
 });
-
-app.post('/tweets', upload.any('image'), async (req, res) => {
-  try {
-    console.log('Request body:', req.body);
-    console.log('Uploaded file:', req.files);
-
-    const { tweet } = req.body;
-    const images = req.files ? req.files.path : null; 
-
-    const newTweet = new Tweet({
-      tweet,
-      images,
-    });
-
-    await newTweet.save();
-    res.status(201).json(newTweet);
-  } catch (error) {
-    console.error('Error registering tweet:', error);
-    res.status(500).send('Error registering tweet.');
-  }
-});
-
 
 
 app.use(require('./src/middlewares/errorHandler'));
