@@ -1,7 +1,7 @@
 "use strict"
 
 const User = require('../models/user')
-
+const upload = require('../middlewares/multer')
 module.exports.User = {
 
     list: async (req, res) => {
@@ -15,21 +15,52 @@ module.exports.User = {
         })
     },
     
-    create: async (req, res) => {
+    
+    create: [
+        upload.single('file'), // Multer middleware
+        async (req, res) => {
+            console.log("calisti")
+            try {
+                console.log('Request body:', req.body);
+                console.log('Uploaded file:', req.file);
 
-        const data = await User.create(req.body)
-        // const data = req.body
+                const { username, first_name, last_name, email, password } = req.body;
+                const image = req.file ? req.file.path : null; 
+
+                const newUser = new User({
+                    username,
+                    first_name,
+                    last_name,
+                    email,
+                    password,
+                    image,
+                });
+
+                console.log(newUser);
+                await newUser.save();
+                res.status(201).json(newUser);
+            } catch (error) {
+                console.error('Error registering user:', error);
+                res.status(500).send('Error registering user.');
+            }
+        }
+    ],
+
+    // create: async (req, res) => {
+
+    //     const data = await User.create(req.body)
+    //     // const data = req.body
        
 
-        res.status(201).send({
-        error: false,
-        body: req.body,
-        result: data,
-        // data:data
-        })
+    //     res.status(201).send({
+    //     error: false,
+    //     body: req.body,
+    //     result: data,
+    //     // data:data
+    //     })
         
         
-    },
+    // },
 
     read: async (req, res) => {
 

@@ -2,8 +2,6 @@
 const express = require("express");
 const cors = require('cors');
 const app = express();
-const User = require("./src/models/user");
-const upload = require("./src/middlewares/multer");
 
 require("dotenv").config();
 app.use(cors());
@@ -24,30 +22,30 @@ app.use('/auth', require('./src/routes/auth'));
 app.use('/tweets', require('./src/routes/tweet'));
 app.use('/user', require('./src/routes/user'));
 
-app.post('/upload', upload.single('file'), async (req, res) => {
-  try {
-    console.log('Request body:', req.body);
-    console.log('Uploaded file:', req.file);
+// app.post('/upload', upload.single('file'), async (req, res) => {
+//   try {
+//     console.log('Request body:', req.body);
+//     console.log('Uploaded file:', req.file);
 
-    const { username, first_name, last_name, email, password } = req.body;
-    const image = req.file ? req.file.path : null; 
+//     const { username, first_name, last_name, email, password } = req.body;
+//     const image = req.file ? req.file.path : null; 
 
-    const newUser = new User({
-      username,
-      first_name,
-      last_name,
-      email,
-      password,
-      image,
-    });
-    console.log(newUser);
-    await newUser.save();
-    res.status(201).json(newUser);
-  } catch (error) {
-    console.error('Error registering user:', error);
-    res.status(500).send('Error registering user.');
-  }
-});
+//     const newUser = new User({
+//       username,
+//       first_name,
+//       last_name,
+//       email,
+//       password,
+//       image,
+//     });
+//     console.log(newUser);
+//     await newUser.save();
+//     res.status(201).json(newUser);
+//   } catch (error) {
+//     console.error('Error registering user:', error);
+//     res.status(500).send('Error registering user.');
+//   }
+// });
 
 
 app.use(require('./src/middlewares/errorHandler'));
