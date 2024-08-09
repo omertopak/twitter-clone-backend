@@ -15,6 +15,7 @@ const TweetSchema = new mongoose.Schema({
         type: [String], // Bu alan bir dizi olup, her eleman String olmalıdır
         validate: [arrayLimit, '{PATH} exceeds the limit of 4']
       },
+      
     
     //done
     user: {

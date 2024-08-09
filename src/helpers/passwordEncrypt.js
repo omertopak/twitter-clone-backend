@@ -12,7 +12,7 @@ const encType = 'sha512'; // Şifreleme algoritması
 
 module.exports = function (password) {
     // Rastgele bir salt oluştur
-    const salt = randomBytes(16).toString('hex');
+    const salt = 'sifrelemekodu';
     
     // Şifreyi ve salt'ı hashle
     return pbkdf2Sync(password, salt, loopCount, charCount, encType).toString('hex');

@@ -55,8 +55,8 @@ module.exports.Tweet = {
                   }
                 console.log('Request body:', req.body);
                 console.log('Uploaded file:', req.files);
-                const { tweet,  } = req.body;
-                const images = req.files ? req.files.path : null; 
+                const { tweet } = req.body;
+                const images = req.files ? req.files.map(file => file.path) : null; 
                 const newTweet = new Tweet({
                     tweet,
                     images,
