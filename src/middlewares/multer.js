@@ -12,6 +12,9 @@ const storage = multer.diskStorage({
 });
 
 // Multer middleware
-const upload = multer({ storage: storage });
+const upload = multer({ 
+  storage: storage, 
+  limits: {fileCount:4} 
+});
 
 module.exports = upload;

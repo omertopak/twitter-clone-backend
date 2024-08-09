@@ -27,18 +27,5 @@ router.route('/:tweetId/bookmark')
     .put(Tweet.bookmark)
 
 
-// ------------------------------------------
-// TweetPost
-// ------------------------------------------
-// router.route('/post')
-//     .get(TweetPost.list)
-//     .post(TweetPost.create)
-
-// router.route('/post/:postId')
-//     .get(TweetPost.read)
-//     .put(TweetPost.update)
-//     .delete(TweetPost.delete)
-
-// router.get('/category/:categoryId/posts', TweetPost.listCategoryPosts)
 
 module.exports = router

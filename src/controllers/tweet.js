@@ -2,6 +2,7 @@
 
 const Tweet = require('../models/tweet')
 const User = require('../models/user')
+const upload = require('../middlewares/multer')
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -34,19 +35,41 @@ module.exports.Tweet = {
         })
     },
 
-    create: async (req, res) => {
-        const tweet = req.body
-        console.log("user",req.user);
-        tweet.user = req.user._id 
-        const data = await Tweet.create(tweet)
-        
-
-        res.status(201).send({
-        error: false,
-        result: data,
-        })
-        
-    },
+    // create: async (req, res) => {
+    //     const tweet = req.body
+    //     console.log("user",req.user);
+    //     tweet.user = req.user._id 
+    //     const data = await Tweet.create(tweet)
+    //     res.status(201).send({
+    //     error: false,
+    //     result: data,
+    //     })
+    // },
+    create: [
+        upload.array('files'),
+        async (req, res) => {
+            console.log("images upload run")
+            try {
+                if (req.files.length > 4) {
+                    console.log("too many files");
+                  }
+                console.log('Request body:', req.body);
+                console.log('Uploaded file:', req.files);
+                const { tweet,  } = req.body;
+                const images = req.files ? req.files.path : null; 
+                const newTweet = new Tweet({
+                    tweet,
+                    images,
+                });
+                console.log(newTweet);
+                await newTweet.save();
+                res.status(201).json(newTweet);
+            } catch (error) {
+                console.error('Error registering user:', error);
+                res.status(500).send('Error registering user.');
+            }
+        }
+    ],
 
     anyUserTweets: async (req, res) => {
         

@@ -21,8 +21,8 @@ module.exports.User = {
         async (req, res) => {
             console.log("calisti")
             try {
-                console.log('Request body:', req.body);
-                console.log('Uploaded file:', req.file);
+                // console.log('Request body:', req.body);
+                // console.log('Uploaded file:', req.file);
 
                 const { username, first_name, last_name, email, password } = req.body;
                 const image = req.file ? req.file.path : null; 
