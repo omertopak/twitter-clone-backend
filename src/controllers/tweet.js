@@ -34,7 +34,8 @@ module.exports.Tweet = {
             result: data
         })
     },
-
+    
+    //* old create
     // create: async (req, res) => {
     //     const tweet = req.body
     //     console.log("user",req.user);
@@ -45,6 +46,7 @@ module.exports.Tweet = {
     //     result: data,
     //     })
     // },
+    
     create: [
         upload.array('files'),
         async (req, res) => {
@@ -66,7 +68,7 @@ module.exports.Tweet = {
                 res.status(201).json(newTweet);
             } catch (error) {
                 console.error('Error registering user:', error);
-                res.status(500).send('Error registering user.');
+                res.status(500).send(error);
             }
         }
     ],
