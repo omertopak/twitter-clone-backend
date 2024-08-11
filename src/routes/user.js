@@ -10,7 +10,7 @@ router.route('/') //admin
     // .get((req,res)=>res.send("get"))
 // router.route('/register')
 //     .post(User.create) 
-router.route('/upload')
+router.route('/register')
     .post(User.create)
 router.route('/:userId')
     .get(User.read) //herkes
