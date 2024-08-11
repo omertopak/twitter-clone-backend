@@ -7,8 +7,9 @@ const storage = multer.diskStorage({
     cb(null, path.join(__dirname, '../uploads'));  
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
-},
+    const uniqueName = `${Date.now()}-${file.originalname}`;
+    cb(null, uniqueName);
+  },
 });
 
 // Multer middleware
