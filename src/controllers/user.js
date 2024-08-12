@@ -17,7 +17,7 @@ module.exports.User = {
     
     
     create: [
-        upload.single('file'), // Multer middleware
+        upload.single('image'), // Multer middleware
         async (req, res) => {
             console.log("calisti")
             try {
