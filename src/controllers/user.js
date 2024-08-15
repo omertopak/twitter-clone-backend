@@ -102,21 +102,27 @@ module.exports.User = {
     follow: async (req, res) => {
         //user
         const user = req.params.userId
+        console.log("userid",user);
         //currentUser
         const currentUser = req.user._id
+        console.log("current",currentUser);
+
         let message = ''
-        if (!user.followers.includes(currentUser)) {
-            await user.updateOne({
+        const userData = await User.findOne({ _id: user })
+        const currentData = await User.findOne({ _id: currentUser })
+        
+        if (!userData.followers.includes(currentUser)) {
+            await userData.updateOne({
               $push: { followers: currentUser },
             });
-            await currentUser.updateOne({ $push: { following: user } });
-            message = `you followed ${user.username}`
+            await currentData.updateOne({ $push: { following: user } });
+            message = `you followed ${userData.username}`
           } else {
-            await user.updateOne({
+            await userData.updateOne({
                 $pull: { followers: currentUser },
               });
-              await currentUser.updateOne({ $pull: { following: user } });
-              message = `you unfollowed ${user.username}`
+              await currentData.updateOne({ $pull: { following: user } });
+              message = `you unfollowed ${userData.username}`
           }
           
           res.status(202).send({

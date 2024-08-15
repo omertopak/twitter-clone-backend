@@ -67,9 +67,9 @@ const UserSchema = new mongoose.Schema({
         ],
     followers_count: {
         type:Number,
-        default:function () {
+        set: function() {
             return this.followers.length;
-        },
+          }
     },
 
     following:[
@@ -81,9 +81,9 @@ const UserSchema = new mongoose.Schema({
 
     following_count: {
         type:Number,
-        default:function () {
+        set: function() {
             return this.following.length;
-        },
+          }
     },
 
     image: {//mongo media
@@ -112,6 +112,7 @@ const UserSchema = new mongoose.Schema({
         ],
        
 }, { collection: 'users', timestamps: true })
+
 
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('User', UserSchema)

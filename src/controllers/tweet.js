@@ -48,8 +48,10 @@ module.exports.Tweet = {
     // },
     
     create: [
-        upload.array('files'),
+        upload.array('image'),
+        
         async (req, res) => {
+            const userId = req.user._id
             console.log("images upload run")
             try {
                 if (req.files.length > 4) {
@@ -57,11 +59,13 @@ module.exports.Tweet = {
                   }
                 console.log('Request body:', req.body);
                 console.log('Uploaded file:', req.files);
+                console.log('userId:', req.user?._id);
                 const { tweet } = req.body;
                 const images = req.files ? req.files.map(file => file.path) : null; 
                 const newTweet = new Tweet({
                     tweet,
                     images,
+                    user:userId
                 });
                 console.log(newTweet);
                 await newTweet.save();
@@ -80,14 +84,11 @@ module.exports.Tweet = {
         //     createAt: -1,
         //   });
 
-        const data = await Tweet.find().populate("user")
-        const forYou = data.filter((tweet) => {
-            // Kullanıcı tanımlıysa ve private özelliği false ise true döndürür
-            return tweet.user && tweet.user.private === false;
-          });
+        const data = (await Tweet.find().populate('user'))
+       
         // const forYou = data.filter((tweet)=>tweet.user.private==false)
         // const forYou = data.filter((tweet)=>console.log(tweet.user.private))
-        const shuffledData = shuffleArray(forYou);
+        const shuffledData = shuffleArray(data);
         const random20Items = shuffledData.slice(0, 20);
         
         res.status(200).send({
@@ -98,8 +99,9 @@ module.exports.Tweet = {
     },
 
     followingTweets:async (req, res) => {
+        console.log("followingtweets calisti");
         const userData = req.user
-        console.log(req.user);
+        console.log('user',req.user);
         const followersTweets=[]
         console.log("following",userData.following_count);
         if(userData.following_count>0){
