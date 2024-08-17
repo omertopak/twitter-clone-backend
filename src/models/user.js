@@ -65,12 +65,12 @@ const UserSchema = new mongoose.Schema({
             ref: 'User'
            }
         ],
-    followers_count: {
-        type:Number,
-        set: function() {
-            return this.followers.length;
-          }
-    },
+    // followers_count: {
+    //     type:Number,
+    //     set: function() {
+    //         return this.followers.length;
+    //       }
+    // },
 
     following:[
         {
@@ -79,12 +79,12 @@ const UserSchema = new mongoose.Schema({
            }
         ],
 
-    following_count: {
-        type:Number,
-        set: function() {
-            return this.following.length;
-          }
-    },
+    // following_count: {
+    //     type:Number,
+    //     set: function() {
+    //         return this.following.length;
+    //       }
+    // },
 
     image: {//mongo media
         type: String,
@@ -113,6 +113,12 @@ const UserSchema = new mongoose.Schema({
        
 }, { collection: 'users', timestamps: true })
 
+UserSchema.virtual('followers_count').get(function() {
+    return this.followers.length;
+});
 
+UserSchema.virtual('following_count').get(function() {
+    return this.following.length;
+});
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('User', UserSchema)

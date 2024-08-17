@@ -98,30 +98,70 @@ module.exports.Tweet = {
         })
     },
 
-    followingTweets:async (req, res) => {
-        console.log("followingtweets calisti");
-        const userData = req.user
-        console.log('user',req.user);
-        const followersTweets=[]
-        console.log("following",userData.following_count);
-        if(userData.following_count>0){
-        followersTweets = await Promise.all(
-          userData.following?.map((followingId) => {
-            return Tweet.find({ $and: 
-                [{user: followingId},
-                {reposted_by:followingId}] })
-                .sort({
-                    createAt: -1,
-                  });
-          })
-        );}
+    // followingTweets:async (req, res) => {
+    //     console.log("followingtweets calisti");
+    //     const userData = req.user
+    //     console.log('user',req.user);
+    //     const followersTweets=[]
+    //     console.log("following",userData.following_count);
+    //     if(userData.following_count>0){
+    //     followersTweets = await Promise.all(
+    //       userData.following?.map((followingId) => {
+    //         return Tweet.find({ $and: 
+    //             [{user: followingId},
+    //             {reposted_by:followingId}] })
+    //             .sort({
+    //                 createAt: -1,
+    //               });
+    //       })
+    //     );}
 
-        res.status(200).send({
-            error: false,
-            // count: followersTweets.length,
-            result: followersTweets
-        })
-    },
+    //     res.status(200).send({
+    //         error: false,
+    //         // count: followersTweets.length,
+    //         result: followersTweets
+    //     })
+    // },
+    
+    followingTweets: async (req, res) => {
+        try {
+            console.log("followingtweets çalisti");
+    
+            const userId = req.user?._id;
+            const user = awaitUser.findById(userId).exec();
+            
+            console.log('user', req.user);
+            console.log("following_count", user.following_count); 
+            
+            const followingIds = user.following;
+    
+            const tweetPromises = followingIds.map((followingId) => {
+                returnTweet.find({
+                    $or: [
+                        { user: followingId },
+                        { reposted_by: followingId }
+                    ]
+                }).sort({ 
+                    createdAt: -1
+                }).exec();
+            });
+    
+            const tweetArrays = awaitPromise.all(tweetPromises);
+            const allTweets = tweetArrays.flat();
+    
+            res.status(200).send({
+                error: false,
+                count: user.following_count,
+                result: allTweets
+            });
+        } catch (error) {
+            console.error('Error fetching following tweets:', error);
+            res.status(500).send({
+                error: true,
+                message: 'Internal server error'
+            });
+        }
+    }
     
     
 
