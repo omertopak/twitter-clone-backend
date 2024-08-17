@@ -128,7 +128,7 @@ module.exports.Tweet = {
             console.log("followingtweets çalisti");
     
             const userId = req.user?._id;
-            const user = awaitUser.findById(userId).exec();
+            const user = await User.findById(userId).exec();
             
             console.log('user', req.user);
             console.log("following_count", user.following_count); 
@@ -136,7 +136,7 @@ module.exports.Tweet = {
             const followingIds = user.following;
     
             const tweetPromises = followingIds.map((followingId) => {
-                returnTweet.find({
+                return Tweet.find({
                     $or: [
                         { user: followingId },
                         { reposted_by: followingId }
@@ -146,7 +146,7 @@ module.exports.Tweet = {
                 }).exec();
             });
     
-            const tweetArrays = awaitPromise.all(tweetPromises);
+            const tweetArrays = await Promise.all(tweetPromises);
             const allTweets = tweetArrays.flat();
     
             res.status(200).send({
@@ -161,7 +161,7 @@ module.exports.Tweet = {
                 message: 'Internal server error'
             });
         }
-    }
+    },
     
     
 
