@@ -166,8 +166,10 @@ module.exports.Tweet = {
     
 
     createReply: async (req, res) => {
-        const tweet_id = req.params?.tweetId
-        const reply = {}
+        
+        const tweet_id = req.body?.tweetId || req.params?.tweetId;
+        console.log("body",req.body);
+        let reply = {}
         reply.tweet = req.body.tweet
         reply.repliedTo = tweet_id
         reply.user = req.user._id 
