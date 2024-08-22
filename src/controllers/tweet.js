@@ -79,12 +79,15 @@ module.exports.Tweet = {
 
     anyUserTweets: async (req, res) => {
         
-        //const userId = req.params.userId
-        // const data = await Tweet.find({$and: [{user: userId},{reposted_by:userId}] }).sort({
-        //     createAt: -1,
-        //   });
-
-        const data = (await Tweet.find().populate('user'))
+    
+        const data = (await Tweet.find().populate('user').populate('repliedTo')
+        .populate({
+            path: 'repliedTo',
+            populate: {
+              path: 'user',
+              select: 'first_name last_name username image' // İhtiyacınıza göre seçimi yapabilirsiniz
+            }
+          }))
        
         // const forYou = data.filter((tweet)=>tweet.user.private==false)
         // const forYou = data.filter((tweet)=>console.log(tweet.user.private))
@@ -165,26 +168,60 @@ module.exports.Tweet = {
     
     
 
-    createReply: async (req, res) => {
+    // createReply: async (req, res) => {
         
-        const tweet_id = req.body?.tweetId || req.params?.tweetId;
-        console.log("body",req.body);
-        let reply = {}
-        reply.tweet = req.body.tweet
-        reply.repliedTo = tweet_id
-        reply.user = req.user._id 
-        // console.log(reply)
-        const replyTweet = await Tweet.create(reply)
+    //     const tweet_id = req.body?.tweetId || req.params?.tweetId;
+    //     console.log("body",req.body);
+    //     let reply = {}
+    //     reply.tweet = req.body.tweet
+    //     reply.repliedTo = tweet_id
+    //     reply.user = req.user._id 
+    //     // console.log(reply)
+    //     const replyTweet = await Tweet.create(reply)
 
-        await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: replyTweet._id } }) 
+    //     await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: replyTweet._id } }) 
 
-        const newTweet = await Tweet.findOne({ _id: tweet_id })
+    //     const newTweet = await Tweet.findOne({ _id: tweet_id })
 
-        res.status(201).send({
-        error: false,
-        result: newTweet,
-        })
-    },
+    //     res.status(201).send({
+    //     error: false,
+    //     result: newTweet,
+    //     })
+    // },
+
+    createReply: [
+        upload.array('image'),
+        async (req, res) => {
+            const tweet_id = req.body?.tweetId || req.params?.tweetId;
+            console.log("body",req.body);  
+            let reply = {}        
+            reply.tweet = req.body.tweet
+            reply.repliedTo = tweet_id
+            reply.user = req.user._id  
+            try {
+                console.log('Request body:', req.body);
+                console.log('Uploaded file:', req.files);
+                const tweet = req.body.tweet
+                const repliedTo = tweet_id
+                const userId = req.user._id  
+                const images = req.files ? req.files.map(file => file.path) : null; 
+                const newTweet = new Tweet({
+                    tweet,
+                    repliedTo,
+                    user:userId,
+                    images
+                });
+                console.log(newTweet);
+                await newTweet.save();
+                await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: newTweet._id } }) 
+
+                res.status(201).json(newTweet);
+            } catch (error) {
+                console.error('Error registering user:', error);
+                res.status(500).send(error);
+            }
+        }
+    ],
 
     createRepost: async (req, res) => {
         let message = ""
