@@ -74,6 +74,16 @@ const TweetSchema = new mongoose.Schema({
         type: Number,
         default:0
     },
+    
+    bookmarks:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref:"User"
+    }],
+
+    bookmark_count:{
+        type: Number,
+        default:0
+    },
 
 
 }, { collection: 'tweet', timestamps: true })
@@ -89,7 +99,7 @@ function arrayLimit(val) {
     this.favorite_count = this.favorites.length;
     next();
 });
-
+   
 
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('Tweet', TweetSchema)

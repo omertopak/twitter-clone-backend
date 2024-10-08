@@ -26,12 +26,13 @@ module.exports.Tweet = {
 
     listUser:async (req, res) => {
         const userId = req.params.userId
+        console.log(userId);
         const data = await Tweet.find({user:userId})
 
         res.status(200).send({
             error: false,
             count: data.length,
-            result: data
+            data: data,
         })
     },
     
@@ -133,8 +134,10 @@ module.exports.Tweet = {
             const userId = req.user?._id;
             const user = await User.findById(userId).exec();
             
+            //! ****************************************
             console.log('user', req.user);
             console.log("following_count", user.following_count); 
+            //! ****************************************
             
             const followingIds = user.following;
     
@@ -223,15 +226,16 @@ module.exports.Tweet = {
         }
     ],
 
-    createRepost: async (req, res) => {
+    createRetweet: async (req, res) => {
         let message = ""
         const user_id = req.user._id
         const tweet_id = req.params?.tweetId
-        console.log("user  tweet",user_id,tweet_id);
+        // console.log("user  tweet",user_id,tweet_id);
         const check = await Tweet.findOne({_id: tweet_id, reposted_by :user_id})
-        
+
         if(check){
             await Tweet.updateOne({ _id: tweet_id },{ $pull: { reposted_by: user_id} })
+
             message = "you undo your retweet."
         }else{
             await Tweet.updateOne({ _id: tweet_id },{ $push: { reposted_by: user_id} })
@@ -239,7 +243,7 @@ module.exports.Tweet = {
         }
 
         const result = await Tweet.findOne({ _id: tweet_id })
-        
+        // console.log("tweet",check);
         res.status(202).send({
             error: false,
             message:message,
@@ -268,7 +272,7 @@ module.exports.Tweet = {
         const user_id = req.user?._id
         const tweet_id = req.params?.tweetId
         const check = await Tweet.findOne({_id: tweet_id, favorites :user_id})
-        
+        // console.log(user_id,tweet_id,check);
         if(check){
             await Tweet.updateOne({ _id: tweet_id }, { $pull: { favorites: user_id } })
             message = "you disliked a post"
@@ -276,30 +280,30 @@ module.exports.Tweet = {
             await Tweet.updateOne({ _id: tweet_id }, { $push: { favorites: user_id } })
             message = "you liked a post"
         }
-        
         const result = await Tweet.findOne({ _id: tweet_id })
         res.status(202).send({
             error: false,
             message:message,
             result: result,
-            
         })
     },
-   
     bookmark : async (req, res) => {
         let message = ""
         const user_id = req.user?._id
         const tweet_id = req.params?.tweetId
-        const check = await User.findOne({_id: user_id, bookmark :tweet_id})
+        const check = await User.findOne({_id: user_id, bookmarks :tweet_id})
         
+
+                // console.log(user_id,tweet_id,check);
         if(check){
-            await User.updateOne({ _id: user_id }, { $pull: { bookmark: tweet_id } })
+            await User.updateOne({ _id: user_id }, { $pull: { bookmarks: tweet_id } })
+            await Tweet.updateOne({ _id: tweet_id }, { $pull: { bookmarks: user_id } })
             message = "you removed a post from your bookmarks"
         }else{
-            await User.updateOne({ _id: user_id }, { $push: { bookmark: tweet_id } })
+            await User.updateOne({ _id: user_id }, { $push: { bookmarks: tweet_id } })
+            await Tweet.updateOne({ _id: tweet_id }, { $push: { bookmarks: user_id } })
             message = "you added a post to your bookmarks"
-        }
-        
+        }     
         res.status(202).send({
             error: false,
             message:message,

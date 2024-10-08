@@ -19,7 +19,7 @@ router.route('/user/:userId')
 router.route('/:tweetId')
     .get(Tweet.read)
     .post(Tweet.createReply)
-    .put(Tweet.createRepost)
+    .put(Tweet.createRetweet)
     .delete(Tweet.delete) //sadece twit sahibi yapar
 router.route('/:tweetId/like')    
     .put(Tweet.fav)
