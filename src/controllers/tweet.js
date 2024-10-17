@@ -232,7 +232,7 @@ module.exports.Tweet = {
         const tweet_id = req.params?.tweetId
         // console.log("user  tweet",user_id,tweet_id);
         const check = await Tweet.findOne({_id: tweet_id, reposted_by :user_id})
-
+        // console.log(check);
         if(check){
             await Tweet.updateOne({ _id: tweet_id },{ $pull: { reposted_by: user_id} })
 
@@ -241,7 +241,7 @@ module.exports.Tweet = {
             await Tweet.updateOne({ _id: tweet_id },{ $push: { reposted_by: user_id} })
             message = "you retweeted."
         }
-
+        console.log(message);
         const result = await Tweet.findOne({ _id: tweet_id })
         // console.log("tweet",check);
         res.status(202).send({
