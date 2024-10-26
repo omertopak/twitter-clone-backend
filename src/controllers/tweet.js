@@ -202,21 +202,23 @@ module.exports.Tweet = {
             reply.repliedTo = tweet_id
             reply.user = req.user._id  
             try {
-                console.log('Request body:', req.body);
-                console.log('Uploaded file:', req.files);
-                const tweet = req.body.tweet
+                // console.log('Request body:', req.body);
+                // console.log('Uploaded file:', req.files);
+                const tweetbody = req.body.tweet
                 const repliedTo = tweet_id
                 const userId = req.user._id  
                 const images = req.files ? req.files.map(file => file.path) : null; 
                 const newTweet = new Tweet({
-                    tweet,
+                    tweetbody,
                     repliedTo,
                     user:userId,
                     images
                 });
-                console.log(newTweet);
-                await newTweet.save();
+                // console.log(newTweet);
                 await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: newTweet._id } }) 
+                const tweet = await Tweet.findById(tweet_id);
+                console.log(tweet);
+                await tweet.save();
 
                 res.status(201).json(newTweet);
             } catch (error) {
@@ -234,16 +236,19 @@ module.exports.Tweet = {
         const check = await Tweet.findOne({_id: tweet_id, reposted_by :user_id})
         // console.log(check);
         if(check){
-            await Tweet.updateOne({ _id: tweet_id },{ $pull: { reposted_by: user_id} })
+            await Tweet.updateOne({ _id: tweet_id },{ $pull: { reposted_by: user_id}})
 
             message = "you undo your retweet."
         }else{
-            await Tweet.updateOne({ _id: tweet_id },{ $push: { reposted_by: user_id} })
+            await Tweet.updateOne({ _id: tweet_id },{ $push: { reposted_by: user_id}})
             message = "you retweeted."
         }
         console.log(message);
         const result = await Tweet.findOne({ _id: tweet_id })
         // console.log("tweet",check);
+        const tweet = await Tweet.findById(tweet_id);
+        await tweet.save();
+
         res.status(202).send({
             error: false,
             message:message,
@@ -267,34 +272,63 @@ module.exports.Tweet = {
 
     },
 
-    fav : async (req, res) => {
-        let message = ""
-        const user_id = req.user?._id
-        const tweet_id = req.params?.tweetId
-        const check = await Tweet.findOne({_id: tweet_id, favorites :user_id})
-        // console.log(user_id,tweet_id,check);
-        if(check){
-            await Tweet.updateOne({ _id: tweet_id }, { $pull: { favorites: user_id } })
-            message = "you disliked a post"
-        }else{
-            await Tweet.updateOne({ _id: tweet_id }, { $push: { favorites: user_id } })
-            message = "you liked a post"
+    fav: async (req, res) => {
+        try {  // try-catch ekleyelim
+            let message = "";
+            const user_id = req.user?._id;
+            const tweet_id = req.params?.tweetId;
+    
+            // İlk hatanız burada: tweet'i bulup check değişkenine atıyorsunuz
+            // ama sonra updateOne ile güncelleyip tweet'i tekrar bulmaya çalışıyorsunuz
+            // Bunun yerine, tek bir tweet dökümanı üzerinde işlem yapalım:
+            
+            const tweet = await Tweet.findById(tweet_id);
+            if (!tweet) {
+                return res.status(404).json({
+                    error: true,
+                    message: "Tweet not found"
+                });
+            }
+    
+            // Kullanıcının favorite yapıp yapmadığını kontrol et
+            const isLiked = tweet.favorites.includes(user_id);
+    
+            if (isLiked) {
+                // Favorilerden çıkar
+                tweet.favorites = tweet.favorites.filter(id => !id.equals(user_id));
+                message = "you disliked a post";
+            } else {
+                // Favorilere ekle
+                tweet.favorites.push(user_id);
+                message = "you liked a post";
+            }
+    
+            // Count'u otomatik güncelle
+            tweet.favorite_count = tweet.favorites.length;
+    
+            // Değişiklikleri kaydet
+            await tweet.save();
+    
+            res.status(202).json({
+                error: false,
+                message: message,
+                result: tweet
+            });
+    
+        } catch (error) {
+            res.status(500).json({
+                error: true,
+                message: error.message
+            });
         }
-        const result = await Tweet.findOne({ _id: tweet_id })
-        res.status(202).send({
-            error: false,
-            message:message,
-            result: result,
-        })
     },
+
     bookmark : async (req, res) => {
         let message = ""
         const user_id = req.user?._id
         const tweet_id = req.params?.tweetId
         const check = await User.findOne({_id: user_id, bookmarks :tweet_id})
-        
-
-                // console.log(user_id,tweet_id,check);
+        // console.log(user_id,tweet_id,check);
         if(check){
             await User.updateOne({ _id: user_id }, { $pull: { bookmarks: tweet_id } })
             await Tweet.updateOne({ _id: tweet_id }, { $pull: { bookmarks: user_id } })
@@ -303,7 +337,10 @@ module.exports.Tweet = {
             await User.updateOne({ _id: user_id }, { $push: { bookmarks: tweet_id } })
             await Tweet.updateOne({ _id: tweet_id }, { $push: { bookmarks: user_id } })
             message = "you added a post to your bookmarks"
-        }     
+        }    
+        const tweet = await Tweet.findById(tweet_id) 
+        await tweet.save();
+
         res.status(202).send({
             error: false,
             message:message,
@@ -327,7 +364,8 @@ module.exports.Tweet = {
         }else{
             message="tweet not found"
         }
-       
+        await tweet.save();
+
         res.status(202).send({
             error: false,
             message:message,

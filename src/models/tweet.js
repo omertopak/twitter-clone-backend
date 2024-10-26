@@ -92,11 +92,15 @@ function arrayLimit(val) {
     return val.length <= 4;
   }
 
-  TweetSchema.pre('save', function(next) {
-    this.reply_count = this.replies.length;
-    this.repost_count = this.reposted_by.length;
-    this.tweet_view_count = this.tweet_viewers.length;
-    this.favorite_count = this.favorites.length;
+  // Mevcut pre-save middleware'inizi güncelleyelim
+TweetSchema.pre('save', async function(next) {
+    // Array uzunluklarını sayarak count'ları güncelle
+    console.log("pre-save calisti");
+    if (this.replies) this.reply_count = this.replies.length;
+    if (this.reposted_by) this.repost_count = this.reposted_by.length;
+    if (this.tweet_viewers) this.tweet_view_count = this.tweet_viewers.length;
+    if (this.favorites) this.favorite_count = this.favorites.length;
+    if (this.bookmarks) this.bookmark_count = this.bookmarks.length;
     next();
 });
    
