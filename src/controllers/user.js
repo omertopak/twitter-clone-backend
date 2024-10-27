@@ -67,7 +67,7 @@ module.exports.User = {
         const userId = req.params.userId
         // const data = await User.findById(req.params.userId)
         const data = await User.findOne({ _id: userId })
-
+        await data.save()
         res.status(200).send({
             error: false,
             result: data
@@ -125,6 +125,12 @@ module.exports.User = {
               message = `you unfollowed ${userData.username}`
           }
           
+          const user1 = await User.findById(user);
+          const user2 = await User.findById(currentUser);
+          await user1.save()
+          await user2.save()
+
+
           res.status(202).send({
             error: false,
             result: message, 

@@ -27,7 +27,7 @@ module.exports.Tweet = {
     listUser:async (req, res) => {
         const userId = req.params.userId
         console.log(userId);
-        const data = await Tweet.find({user:userId})
+        const data = await Tweet.find({user:userId}).populate('user').populate('repliedTo')
 
         res.status(200).send({
             error: false,
@@ -263,11 +263,11 @@ module.exports.Tweet = {
 
         await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { tweet_viewers: user_id} })
         
-        const data = await Tweet.findOne({ _id: req.params.tweetId })
-        
+        const tweet = await Tweet.findOne({ _id: req.params.tweetId })
+        await tweet.save()
         res.status(200).send({
             error: false,
-            result: data
+            result: tweet
         })
 
     },
@@ -333,11 +333,13 @@ module.exports.Tweet = {
             await User.updateOne({ _id: user_id }, { $pull: { bookmarks: tweet_id } })
             await Tweet.updateOne({ _id: tweet_id }, { $pull: { bookmarks: user_id } })
             message = "you removed a post from your bookmarks"
+            
         }else{
             await User.updateOne({ _id: user_id }, { $push: { bookmarks: tweet_id } })
             await Tweet.updateOne({ _id: tweet_id }, { $push: { bookmarks: user_id } })
             message = "you added a post to your bookmarks"
-        }    
+        }  
+        console.log(message);  
         const tweet = await Tweet.findById(tweet_id) 
         await tweet.save();
 

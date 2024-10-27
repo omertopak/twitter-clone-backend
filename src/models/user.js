@@ -65,12 +65,11 @@ const UserSchema = new mongoose.Schema({
             ref: 'User'
            }
         ],
-    // followers_count: {
-    //     type:Number,
-    //     set: function() {
-    //         return this.followers.length;
-    //       }
-    // },
+
+    followers_count:{
+        type:Number,
+        default:0
+    },
 
     following:[
         {
@@ -79,12 +78,10 @@ const UserSchema = new mongoose.Schema({
            }
         ],
 
-    // following_count: {
-    //     type:Number,
-    //     set: function() {
-    //         return this.following.length;
-    //       }
-    // },
+    following_count:{
+        type:Number,
+        default:0
+    },
 
     image: {//mongo media
         type: String,
@@ -113,12 +110,13 @@ const UserSchema = new mongoose.Schema({
        
 }, { collection: 'users', timestamps: true })
 
-UserSchema.virtual('followers_count').get(function() {
-    return this.followers.length;
+UserSchema.pre('save', async function(next) {
+    // Array uzunluklarını sayarak count'ları güncelle
+    console.log("pre-save user calisti");
+    if (this.followers) this.followers_count = this.followers.length;
+    if (this.following) this.following_count = this.following.length;
+    next();
 });
 
-UserSchema.virtual('following_count').get(function() {
-    return this.following.length;
-});
 /* ------------------------------------------------------- */
 module.exports = mongoose.model('User', UserSchema)
