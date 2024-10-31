@@ -70,7 +70,7 @@ module.exports.User = {
         await data.save()
         res.status(200).send({
             error: false,
-            result: data
+            data: data
         })
 
     },

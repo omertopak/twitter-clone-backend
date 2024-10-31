@@ -1,7 +1,10 @@
 "use strict";
 const express = require("express");
 const cors = require('cors');
+const path = require('path'); // path modülünü ekledik
 const app = express();
+
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 require("dotenv").config();
 app.use(cors());
