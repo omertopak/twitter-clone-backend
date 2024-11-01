@@ -86,7 +86,7 @@ module.exports.Tweet = {
             path: 'repliedTo',
             populate: {
               path: 'user',
-              select: 'first_name last_name username image' // İhtiyacınıza göre seçimi yapabilirsiniz
+              //select: 'first_name last_name username image' // İhtiyacınıza göre seçimi yapabilirsiniz
             }
           }))
        
@@ -263,7 +263,12 @@ module.exports.Tweet = {
 
         await Tweet.updateOne({ _id: req.params.tweetId },{ $addToSet: { tweet_viewers: user_id} })
         
-        const tweet = await Tweet.findOne({ _id: req.params.tweetId })
+        const tweet = await Tweet.findOne({ _id: req.params.tweetId }).populate('user').populate({
+            path: 'replies',
+            populate: {
+              path: 'user',
+            }
+          })
         await tweet.save()
         res.status(200).send({
             error: false,
