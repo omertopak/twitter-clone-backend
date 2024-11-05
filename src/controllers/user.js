@@ -66,7 +66,7 @@ module.exports.User = {
 
         const userId = req.params.userId
         // const data = await User.findById(req.params.userId)
-        const data = await User.findOne({ _id: userId })
+        const data = await User.findOne({ _id: userId }).populate('bookmarks')
         await data.save()
         res.status(200).send({
             error: false,
