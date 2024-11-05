@@ -15,18 +15,22 @@ module.exports.User = {
         })
     },
     
-    
+   
     create: [
-        upload.single('image'), // Multer middleware
+        (req, res, next) => {
+            upload.single('image')(req, res, (err) => {
+                if (err) {
+                    // Eğer Multer'de hata oluşursa, hatayı `next` ile sonraki middleware'e aktar
+                    return res.status(400).send({ error: 'Dosya yükleme hatası' });
+                }
+                next();
+            });
+        },
         async (req, res) => {
-            console.log("calisti")
             try {
-                // console.log('Request body:', req.body);
-                // console.log('Uploaded file:', req.file);
-
                 const { username, first_name, last_name, email, password } = req.body;
                 const image = req.file ? req.file.path : null; 
-
+    
                 const newUser = new User({
                     username,
                     first_name,
@@ -35,16 +39,18 @@ module.exports.User = {
                     password,
                     image,
                 });
-
+    
                 console.log(newUser);
                 await newUser.save();
-                res.status(201).json(newUser);
+                res.status(201).json(newUser); // Yanıt gönderme işlemi yalnızca bir kez yapılır
+                console.log("kayit");
+
             } catch (error) {
-                // console.error('Error registering user:', error);
                 res.status(500).send('Error registering user.');
             }
         }
     ],
+    
 
     // create: async (req, res) => {
 
