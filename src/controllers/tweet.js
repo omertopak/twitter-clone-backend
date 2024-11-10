@@ -216,8 +216,6 @@ module.exports.Tweet = {
                 });
                 // console.log(newTweet);
                 await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: newTweet._id } }) 
-                const tweet = await Tweet.findById(tweet_id);
-                console.log(tweet);
                 await tweet.save();
 
                 res.status(201).json(newTweet);
