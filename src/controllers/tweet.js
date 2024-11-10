@@ -102,30 +102,6 @@ module.exports.Tweet = {
         })
     },
 
-    // followingTweets:async (req, res) => {
-    //     console.log("followingtweets calisti");
-    //     const userData = req.user
-    //     console.log('user',req.user);
-    //     const followersTweets=[]
-    //     console.log("following",userData.following_count);
-    //     if(userData.following_count>0){
-    //     followersTweets = await Promise.all(
-    //       userData.following?.map((followingId) => {
-    //         return Tweet.find({ $and: 
-    //             [{user: followingId},
-    //             {reposted_by:followingId}] })
-    //             .sort({
-    //                 createAt: -1,
-    //               });
-    //       })
-    //     );}
-
-    //     res.status(200).send({
-    //         error: false,
-    //         // count: followersTweets.length,
-    //         result: followersTweets
-    //     })
-    // },
     
     followingTweets: async (req, res) => {
         try {
@@ -149,7 +125,11 @@ module.exports.Tweet = {
                     ]
                 }).sort({ 
                     createdAt: -1
-                }).exec();
+                })
+                .populate('user')          // `user` alanını populate et
+                .populate('repliedTo')      // `repliedTo` alanını populate et
+                .populate('reposted_by')    // `reposted_by` alanını populate et
+                .exec();
             });
     
             const tweetArrays = await Promise.all(tweetPromises);
