@@ -81,7 +81,7 @@ module.exports.Tweet = {
     anyUserTweets: async (req, res) => {
         
     
-        const data = (await Tweet.find().populate('user').populate('repliedTo')
+        const data = (await Tweet.find().populate('user').populate('repliedTo').populate('reposted_by')
         .populate({
             path: 'repliedTo',
             populate: {
