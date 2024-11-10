@@ -53,14 +53,14 @@ module.exports.Tweet = {
         
         async (req, res) => {
             const userId = req.user._id
-            console.log("images upload run")
+            // console.log("images upload run")
             try {
                 if (req.files.length > 4) {
-                    console.log("too many files");
+                    // console.log("too many files");
                   }
-                console.log('Request body:', req.body);
-                console.log('Uploaded file:', req.files);
-                console.log('userId:', req.user?._id);
+                // console.log('Request body:', req.body);
+                // console.log('Uploaded file:', req.files);
+                // console.log('userId:', req.user?._id);
                 const { tweet } = req.body;
                 const images = req.files ? req.files.map(file => file.path) : null; 
                 const newTweet = new Tweet({
@@ -196,27 +196,27 @@ module.exports.Tweet = {
         upload.array('image'),
         async (req, res) => {
             const tweet_id = req.body?.tweetId || req.params?.tweetId;
-            console.log("body",req.body);  
-            let reply = {}        
-            reply.tweet = req.body.tweet
-            reply.repliedTo = tweet_id
-            reply.user = req.user._id  
+            // console.log("body",req.body);  
+            
             try {
                 // console.log('Request body:', req.body);
                 // console.log('Uploaded file:', req.files);
                 const tweetbody = req.body.tweet
-                const repliedTo = tweet_id
                 const userId = req.user._id  
                 const images = req.files ? req.files.map(file => file.path) : null; 
                 const newTweet = new Tweet({
-                    tweetbody,
-                    repliedTo,
+                    tweet:tweetbody,
+                    repliedTo:tweet_id,
                     user:userId,
                     images
                 });
-                // console.log(newTweet);
+                console.log("new tweet",newTweet);
+                await newTweet.save();
                 await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: newTweet._id } }) 
-                await tweet.save();
+                const tweet1 = await Tweet.findById(tweet_id);
+                await tweet1.save();
+                console.log("ilk tweet",tweet1);
+                // console.log(newTweet);
 
                 res.status(201).json(newTweet);
             } catch (error) {
