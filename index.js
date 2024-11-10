@@ -7,17 +7,17 @@ const app = express();
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 require("dotenv").config();
-// app.use(cors());
-const allowedOrigins = ['http://localhost:3000', 'https://twitter-clone-iv4y.onrender.com'];
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('CORS policy does not allow access from this origin'));
-        }
-    }
-}));
+app.use(cors());
+// const allowedOrigins = ['http://localhost:3000', 'https://twitter-clone-iv4y.onrender.com'];
+// app.use(cors({
+//     origin: (origin, callback) => {
+//         if (!origin || allowedOrigins.includes(origin)) {
+//             callback(null, true);
+//         } else {
+//             callback(new Error('CORS policy does not allow access from this origin'));
+//         }
+//     }
+// }));
 
 
 const PORT = process.env.PORT || 8000;
