@@ -1,7 +1,8 @@
-const multer = require('multer');
-const path = require('path');
+// const multer = require('multer');
+// const path = require('path');
 
-// Multer storage configuration
+// // Multer storage configuration
+
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
 //     cb(null, path.join(__dirname, '../uploads'));  
@@ -11,11 +12,27 @@ const path = require('path');
 //     cb(null, uniqueName);
 //   },
 // });
+
+// // Multer middleware
+// const upload = multer({ 
+//   storage: storage, 
+//   limits: {fileCount:4} 
+// });
+
+// module.exports = upload;
+
+const multer = require('multer');
+const fs = require('fs'); // fs modülünü içe aktar
+const path = require('path');
+
+// Multer storage configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, '../uploads');
+    
+    // Klasör yoksa oluştur
     if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath, { recursive: true }); // Klasör yoksa oluştur
+      fs.mkdirSync(uploadPath, { recursive: true });
     }
     cb(null, uploadPath);
   },
@@ -24,10 +41,11 @@ const storage = multer.diskStorage({
     cb(null, uniqueName);
   },
 });
+
 // Multer middleware
-const upload = multer({ 
-  storage: storage, 
-  limits: {fileCount:4} 
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit
 });
 
 module.exports = upload;
