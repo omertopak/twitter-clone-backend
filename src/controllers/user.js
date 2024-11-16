@@ -29,8 +29,9 @@ module.exports.User = {
         async (req, res) => {
             try {
                 const { username, first_name, last_name, email, password } = req.body;
-                const image = req.file ? req.file.path : null; 
-    
+                // const image = req.file ? req.file.path : null; 
+                const image = req.file ? `/uploads/${req.file.filename}` : null;
+
                 const newUser = new User({
                     username,
                     first_name,
