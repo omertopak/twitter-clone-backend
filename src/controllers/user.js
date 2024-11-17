@@ -2,6 +2,9 @@
 
 const User = require('../models/user')
 const upload = require('../middlewares/multer')
+const sharp = require('sharp');
+const defaultBase64 = require('../helpers/data');
+
 module.exports.User = {
 
     list: async (req, res) => {
@@ -18,10 +21,29 @@ module.exports.User = {
    
     create: [
         (req, res, next) => {
-            upload.single('image')(req, res, (err) => {
+            upload.single('image')(req, res, async (err) => {
                 if (err) {
-                    // Eğer Multer'de hata oluşursa, hatayı `next` ile sonraki middleware'e aktar
                     return res.status(400).send({ error: 'Dosya yükleme hatası' });
+                }
+                if (req.file) {
+                    try {
+                        // Görseli yeniden boyutlandır ve base64 formatına dönüştür
+                        const optimizedImageBuffer = await sharp(req.file.path)
+                            .resize(300, 300) // Görseli 300x300 piksele küçült
+                            .toFormat('jpeg') // Görseli JPEG formatına çevir
+                            .jpeg({ quality: 80 }) // Kaliteyi %80'e düşür
+                            .toBuffer(); // Görseli buffer olarak al
+    
+                        // Base64 formatına dönüştür
+                        req.file.optimizedBase64 = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
+    
+                        // Orijinal dosyayı silmek isterseniz
+                        const fs = require('fs');
+                        fs.unlinkSync(req.file.path); // Geçici dosyayı sil
+    
+                    } catch (error) {
+                        return res.status(500).send({ error: 'Görsel işleme hatası' });
+                    }
                 }
                 next();
             });
@@ -30,7 +52,8 @@ module.exports.User = {
             try {
                 const { username, first_name, last_name, email, password } = req.body;
                 // const image = req.file ? req.file.path : null; 
-                const image = req.file ? `/uploads/${req.file.filename}` : null;
+                const defaultImage = ""
+                const image = req.file ? req.file.optimizedBase64 : defaultBase64;
 
                 const newUser = new User({
                     username,
