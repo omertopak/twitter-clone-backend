@@ -3,6 +3,7 @@
 const Tweet = require('../models/tweet')
 const User = require('../models/user')
 const upload = require('../middlewares/multer')
+const sharp = require('sharp');
 
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -49,23 +50,38 @@ module.exports.Tweet = {
     // },
     
     create: [
-        upload.array('image'),
-        
-        async (req, res) => {
+        (req, res, next) => {
+        upload.array('image')(req, res, async (err) => {
             const userId = req.user._id
             // console.log("images upload run")
             try {
                 if (req.files.length > 4) {
                     // console.log("too many files");
                   }
+                  // Yüklenen her bir dosya için işlemleri yapın
+                  const optimizedImages = [];
+                  for (const file of req.files) {
+                      const optimizedImageBuffer = await sharp(file.path)
+                          .resize(300, 300) // Görseli 300x300 piksele küçült
+                          .toFormat('jpeg') // Görseli JPEG formatına çevir
+                          .jpeg({ quality: 80 }) // Kaliteyi %80'e düşür
+                          .toBuffer(); // Görseli buffer olarak al
+
+                      // Görseli Base64 formatına dönüştür
+                      const base64Image = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
+                      optimizedImages.push(base64Image);
+
+                      // Geçici dosyayı sil
+                      const fs = require('fs');
+                      fs.unlinkSync(file.path);
+                  }
                 // console.log('Request body:', req.body);
-                // console.log('Uploaded file:', req.files);
+                // console.log('Uploaded file:', optimizedImages);
                 // console.log('userId:', req.user?._id);
-                const { tweet } = req.body;
-                const images = req.files ? req.files.map(file => file.path) : null; 
+                const { tweet } = req.body; 
                 const newTweet = new Tweet({
                     tweet,
-                    images,
+                    images:optimizedImages,
                     user:userId
                 });
                 console.log(newTweet);
@@ -75,7 +91,7 @@ module.exports.Tweet = {
                 console.error('Error registering user:', error);
                 res.status(500).send(error);
             }
-        }
+        })}
     ],
 
     anyUserTweets: async (req, res) => {
@@ -173,24 +189,39 @@ module.exports.Tweet = {
     // },
 
     createReply: [
-        upload.array('image'),
-        async (req, res) => {
+        (req, res, next) => {
+        upload.array('image')(req, res, async (err) => {
             const tweet_id = req.body?.tweetId || req.params?.tweetId;
             // console.log("body",req.body);  
-            
             try {
-                // console.log('Request body:', req.body);
-                // console.log('Uploaded file:', req.files);
+                if (req.files.length > 4) {
+                    // console.log("too many files");
+                  }
+                const optimizedImages = [];
+                for (const file of req.files) {
+                    const optimizedImageBuffer = await sharp(file.path)
+                        .resize(300, 300) // Görseli 300x300 piksele küçült
+                        .toFormat('jpeg') // Görseli JPEG formatına çevir
+                        .jpeg({ quality: 80 }) // Kaliteyi %80'e düşür
+                        .toBuffer(); // Görseli buffer olarak al
+
+                    // Görseli Base64 formatına dönüştür
+                    const base64Image = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
+                    optimizedImages.push(base64Image);
+
+                    // Geçici dosyayı sil
+                    const fs = require('fs');
+                    fs.unlinkSync(file.path);
+                }
                 const tweetbody = req.body.tweet
                 const userId = req.user._id  
-                const images = req.files ? req.files.map(file => file.path) : null; 
                 const newTweet = new Tweet({
                     tweet:tweetbody,
                     repliedTo:tweet_id,
                     user:userId,
-                    images
+                    images:optimizedImages
                 });
-                console.log("new tweet",newTweet);
+                // console.log("new tweet",newTweet);
                 await newTweet.save();
                 await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: newTweet._id } }) 
                 const tweet1 = await Tweet.findById(tweet_id);
@@ -203,7 +234,7 @@ module.exports.Tweet = {
                 console.error('Error registering user:', error);
                 res.status(500).send(error);
             }
-        }
+        })}
     ],
 
     createRetweet: async (req, res) => {

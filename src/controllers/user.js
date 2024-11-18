@@ -76,21 +76,6 @@ module.exports.User = {
     ],
     
 
-    // create: async (req, res) => {
-
-    //     const data = await User.create(req.body)
-    //     // const data = req.body
-       
-
-    //     res.status(201).send({
-    //     error: false,
-    //     body: req.body,
-    //     result: data,
-    //     // data:data
-    //     })
-        
-        
-    // },
 
     read: async (req, res) => {
 

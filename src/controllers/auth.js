@@ -19,7 +19,9 @@ module.exports = {
             if (user && user.password == passwordEncrypt(password)) {
 
                     // JWT:
-                    const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_KEY, { expiresIn: '120m' })
+                    // const accessToken = jwt.sign(user.toJSON(), process.env.ACCESS_KEY, { expiresIn: '120m' })
+                    const accessToken = jwt.sign({ _id: user._id }, process.env.ACCESS_KEY, { expiresIn: '120m' })
+
                     const refreshToken = jwt.sign({ _id: user._id, password: user.password }, process.env.REFRESH_KEY, { expiresIn: '1d' })
 
                     res.send({
