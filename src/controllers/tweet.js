@@ -27,7 +27,7 @@ module.exports.Tweet = {
 
     listUser:async (req, res) => {
         const userId = req.params.userId
-        console.log(userId);
+        // console.log(userId);
         const data = await Tweet.find({user:userId}).populate('user').populate('repliedTo')
 
         res.status(200).send({
@@ -37,18 +37,7 @@ module.exports.Tweet = {
         })
     },
     
-    //* old create
-    // create: async (req, res) => {
-    //     const tweet = req.body
-    //     console.log("user",req.user);
-    //     tweet.user = req.user._id 
-    //     const data = await Tweet.create(tweet)
-    //     res.status(201).send({
-    //     error: false,
-    //     result: data,
-    //     })
-    // },
-    
+   
     create: [
         (req, res, next) => {
         upload.array('image')(req, res, async (err) => {
@@ -95,66 +84,120 @@ module.exports.Tweet = {
     ],
 
     anyUserTweets: async (req, res) => {
-        
+        try {
+            const data = await Tweet.find()
+                .populate('user', 'first_name last_name username image') // Sadece bu alanları getir
+                .populate('repliedTo')
+                .populate('reposted_by')
+                .populate({
+                    path: 'repliedTo',
+                    populate: {
+                        path: 'user',
+                        select: 'first_name last_name username image', // repliedTo -> user alanında sadece bunları getir
+                    }
+                });
     
-        const data = (await Tweet.find().populate('user').populate('repliedTo').populate('reposted_by')
-        .populate({
-            path: 'repliedTo',
-            populate: {
-              path: 'user',
-              //select: 'first_name last_name username image' // İhtiyacınıza göre seçimi yapabilirsiniz
-            }
-          }))
-       
-        // const forYou = data.filter((tweet)=>tweet.user.private==false)
-        // const forYou = data.filter((tweet)=>console.log(tweet.user.private))
-        const shuffledData = shuffleArray(data);
-        const random20Items = shuffledData.slice(0, 20);
-        
-        res.status(200).send({
-            error: false,
-            count: random20Items.length,
-            result: random20Items
-        })
+            const shuffledData = shuffleArray(data);
+            const random20Items = shuffledData.slice(0, 10);
+                console.log("shuffle");
+            res.status(200).send({
+                error: false,
+                count: random20Items.length,
+                result: random20Items,
+            });
+        } catch (error) {
+            console.error(error);
+            res.status(500).send({
+                error: true,
+                message: "An error occurred while fetching tweets.",
+            });
+        }
     },
+    // anyUserTweets: async (req, res) => {
+    //     try {
+    //         const page = parseInt(req.params.page) || 1;  // Sayfa parametresini integer'a çevir
+    //         console.log("Current Page:", page);
+    //         const limit = 20; // Her sayfa için kayıt sayısı
+    //         const skip = (page - 1) * limit; // Atlama miktarı
+    
+    //         const data = await Tweet.find()
+    //             .populate('user', 'first_name last_name username image')
+    //             .populate('repliedTo')
+    //             .populate('reposted_by')
+    //             .populate({
+    //                 path: 'repliedTo',
+    //                 populate: {
+    //                     path: 'user',
+    //                     select: 'first_name last_name username image',
+    //                 },
+    //             })
+    //             .sort({ createdAt: -1 }) // Yeni tweetler önce gelir
+    //             .skip(skip) // Sayfalamayı uygular
+    //             .limit(limit); // Her istekte belirtilen kadar veri gönderir
+    
+    //         res.status(200).send({
+    //             error: false,
+    //             count: data.length,
+    //             result: data,
+    //         });
+    //     } catch (error) {
+    //         console.error(error);
+    //         res.status(500).send({
+    //             error: true,
+    //             message: "An error occurred while fetching tweets.",
+    //         });
+    //     }
+    // },
+    
+    
 
     
     followingTweets: async (req, res) => {
         try {
-            console.log("followingtweets çalisti");
-    
+            console.log("shuffel");
             const userId = req.user?._id;
             const user = await User.findById(userId).exec();
+            // console.log("followingtweets çalisti",user);
+            // console.log("followingtweets çalisti",userId);
             
             //! ****************************************
-            console.log('user', req.user);
-            console.log("following_count", user.following_count); 
+            // console.log('user', req.user);
+            // console.log("following_count", user.following_count); 
             //! ****************************************
             
             const followingIds = user.following;
-    
+            // console.log(followingIds);
             const tweetPromises = followingIds.map((followingId) => {
                 return Tweet.find({
                     $or: [
-                        { user: followingId },
-                        { reposted_by: followingId }
+                        { user: followingId }
                     ]
                 }).sort({ 
                     createdAt: -1
                 })
-                .populate('user')          // `user` alanını populate et
-                .populate('repliedTo')      // `repliedTo` alanını populate et
+                // .populate('user')          // `user` alanını populate et
+                .populate('user', 'first_name last_name username image')
+                // .populate('repliedTo')      // `repliedTo` alanını populate et
+                .populate({
+                    path: 'repliedTo',
+                    populate: {
+                        path: 'user',
+                        select: 'first_name last_name username image', // repliedTo -> user alanında sadece bunları getir
+                    }
+                })
                 .populate('reposted_by')    // `reposted_by` alanını populate et
                 .exec();
             });
     
             const tweetArrays = await Promise.all(tweetPromises);
             const allTweets = tweetArrays.flat();
-    
+            const shuffledData = shuffleArray(allTweets);
+            const random20Items = shuffledData.slice(0, 10);
+
             res.status(200).send({
                 error: false,
                 count: user.following_count,
-                result: allTweets
+                result: random20Items
             });
         } catch (error) {
             console.error('Error fetching following tweets:', error);
@@ -166,27 +209,6 @@ module.exports.Tweet = {
     },
     
     
-
-    // createReply: async (req, res) => {
-        
-    //     const tweet_id = req.body?.tweetId || req.params?.tweetId;
-    //     console.log("body",req.body);
-    //     let reply = {}
-    //     reply.tweet = req.body.tweet
-    //     reply.repliedTo = tweet_id
-    //     reply.user = req.user._id 
-    //     // console.log(reply)
-    //     const replyTweet = await Tweet.create(reply)
-
-    //     await Tweet.updateOne({ _id: tweet_id }, { $push: { replies: replyTweet._id } }) 
-
-    //     const newTweet = await Tweet.findOne({ _id: tweet_id })
-
-    //     res.status(201).send({
-    //     error: false,
-    //     result: newTweet,
-    //     })
-    // },
 
     createReply: [
         (req, res, next) => {

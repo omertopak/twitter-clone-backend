@@ -117,10 +117,10 @@ module.exports.User = {
     follow: async (req, res) => {
         //user
         const user = req.params.userId
-        console.log("userid",user);
+        // console.log("userid",user);
         //currentUser
         const currentUser = req.user._id
-        console.log("current",currentUser);
+        // console.log("current",currentUser);
 
         let message = ''
         const userData = await User.findOne({ _id: user })
