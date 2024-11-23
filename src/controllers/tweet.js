@@ -99,7 +99,7 @@ module.exports.Tweet = {
     
             const shuffledData = shuffleArray(data);
             const random20Items = shuffledData.slice(0, 10);
-                console.log("shuffle");
+                console.log("shufflee");
             res.status(200).send({
                 error: false,
                 count: random20Items.length,
