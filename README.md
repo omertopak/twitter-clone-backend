@@ -65,40 +65,40 @@ Clone the repository, install dependencies, set up environment variables, and st
   cd ../server
   npm install
 
-(```
-## Folder Structure
+## Project Structure
+```
 ├── client/         # React frontend
-├── node_modules
-├── package-lock.json
-├── package.json
-├── public
-├── src
-│   ├── App.jsx
-│   ├── app
-│   ├── assets
-│   ├── components
-│   ├── features
-│   ├── helper
-│   ├── hooks
-│   ├── index.css
-│   ├── index.js
-│   ├── pages
-│   ├── router
-│   └── styles
-├── yarn.lock
-└── README.md
-
+│   ├── node_modules
+│   ├── package-lock.json
+│   ├── package.json
+│   ├── public
+│   ├── src
+│   │   ├── App.jsx
+│   │   ├── app
+│   │   ├── assets
+│   │   ├── components
+│   │   ├── features
+│   │   ├── helper
+│   │   ├── hooks
+│   │   ├── index.css
+│   │   ├── index.js
+│   │   ├── pages
+│   │   ├── router
+│   │   └── styles
+│   ├── yarn.lock
+│   └── README.md
+│
 ├── server/         # Node.js backend
-├── index.js
-├── node_modules
-├── package-lock.json
-├── package.json
-├── src
-│   ├── configs
-│   ├── controllers
-│   ├── helpers
-│   ├── middlewares
-│   ├── models
-│   └── routes
-└── yarn.lock
-```)
+    ├── index.js
+    ├── node_modules
+    ├── package-lock.json
+    ├── package.json
+    ├── src
+    │   ├── configs
+    │   ├── controllers
+    │   ├── helpers
+    │   ├── middlewares
+    │   ├── models
+    │   └── routes
+    └── yarn.lock
+```
