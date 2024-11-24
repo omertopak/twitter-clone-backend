@@ -12,6 +12,17 @@ You can view the live version of the project hosted on **[Netlify](https://twitt
 
 This is the deployed version of the project, showcasing the main features such as tweet creation, replies, and the infinite scroll functionality.
 
+## Login - Test Account
+
+For users who don't want to create a new account, you can log in using the following test credentials:
+
+- **Email**: test@gmail.com
+- **Password**: testtest
+
+These credentials will allow you to test the app's functionality without creating a new account.
+
+> **Note**: Due to the hosting on Render.com, the initial upload may take a bit longer. Please be patient during the first load of the application.
+-------------
 
 ## Features
 - **User Authentication:** Users can sign up, log in, and manage their profiles.
