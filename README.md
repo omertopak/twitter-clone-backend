@@ -65,7 +65,7 @@ Clone the repository, install dependencies, set up environment variables, and st
   cd ../server
   npm install
 
-
+(```
 ## Folder Structure
 ├── client/         # React frontend
 ├── node_modules
@@ -101,3 +101,4 @@ Clone the repository, install dependencies, set up environment variables, and st
 │   ├── models
 │   └── routes
 └── yarn.lock
+```)
