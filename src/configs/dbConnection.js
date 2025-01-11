@@ -1,8 +1,4 @@
 "use strict"
-/* -------------------------------------------------------
-    NODEJS EXPRESS | CLARUSWAY FullStack Team
-------------------------------------------------------- */
-// MongoDB Connection:
 
 const mongoose = require('mongoose')
 
