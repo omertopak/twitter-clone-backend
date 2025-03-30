@@ -1,6 +1,5 @@
 "use strict"
 
-// const { mongoose } = require('../configs/dbConnection')
 const mongoose = require('mongoose')
 const passwordEncrypt = require('../helpers/passwordEncrypt')
 
@@ -111,7 +110,6 @@ const UserSchema = new mongoose.Schema({
 }, { collection: 'users', timestamps: true })
 
 UserSchema.pre('save', async function(next) {
-    // Array uzunluklarını sayarak count'ları güncelle
     console.log("pre-save user calisti");
     if (this.followers) this.followers_count = this.followers.length;
     if (this.following) this.following_count = this.following.length;

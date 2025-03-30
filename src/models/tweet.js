@@ -13,7 +13,7 @@ const TweetSchema = new mongoose.Schema({
     },
 
     images: {
-        type: [String], // Bu alan bir dizi olup, her eleman String olmalıdır
+        type: [String], 
         validate: [arrayLimit, '{PATH} exceeds the limit of 4']
       },
       
@@ -92,9 +92,7 @@ function arrayLimit(val) {
     return val.length <= 4;
   }
 
-  // Mevcut pre-save middleware'inizi güncelleyelim
 TweetSchema.pre('save', async function(next) {
-    // Array uzunluklarını sayarak count'ları güncelle
     console.log("pre-save calisti");
     if (this.replies) this.reply_count = this.replies.length;
     if (this.reposted_by) this.repost_count = this.reposted_by.length;

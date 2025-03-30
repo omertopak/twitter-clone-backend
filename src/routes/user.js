@@ -7,9 +7,6 @@ const { User } = require('../controllers/user');
 
 router.route('/') //admin
     .get(User.list)
-    // .get((req,res)=>res.send("get"))
-// router.route('/register')
-//     .post(User.create) 
 router.route('/register')
     .post(User.create)
 router.route('/:userId')

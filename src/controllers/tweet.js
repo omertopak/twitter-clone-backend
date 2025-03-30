@@ -99,7 +99,7 @@ module.exports.Tweet = {
     
             const shuffledData = shuffleArray(data);
             const random20Items = shuffledData.slice(0, 10);
-                console.log("shuffle");
+                console.log("shufflee");
             res.status(200).send({
                 error: false,
                 count: random20Items.length,
@@ -113,43 +113,7 @@ module.exports.Tweet = {
             });
         }
     },
-    // anyUserTweets: async (req, res) => {
-    //     try {
-    //         const page = parseInt(req.params.page) || 1;  // Sayfa parametresini integer'a çevir
-    //         console.log("Current Page:", page);
-    //         const limit = 20; // Her sayfa için kayıt sayısı
-    //         const skip = (page - 1) * limit; // Atlama miktarı
-    
-    //         const data = await Tweet.find()
-    //             .populate('user', 'first_name last_name username image')
-    //             .populate('repliedTo')
-    //             .populate('reposted_by')
-    //             .populate({
-    //                 path: 'repliedTo',
-    //                 populate: {
-    //                     path: 'user',
-    //                     select: 'first_name last_name username image',
-    //                 },
-    //             })
-    //             .sort({ createdAt: -1 }) // Yeni tweetler önce gelir
-    //             .skip(skip) // Sayfalamayı uygular
-    //             .limit(limit); // Her istekte belirtilen kadar veri gönderir
-    
-    //         res.status(200).send({
-    //             error: false,
-    //             count: data.length,
-    //             result: data,
-    //         });
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).send({
-    //             error: true,
-    //             message: "An error occurred while fetching tweets.",
-    //         });
-    //     }
-    // },
-    
-    
+ 
 
     
     followingTweets: async (req, res) => {
@@ -222,10 +186,10 @@ module.exports.Tweet = {
                 const optimizedImages = [];
                 for (const file of req.files) {
                     const optimizedImageBuffer = await sharp(file.path)
-                        .resize(300, 300) // Görseli 300x300 piksele küçült
-                        .toFormat('jpeg') // Görseli JPEG formatına çevir
-                        .jpeg({ quality: 80 }) // Kaliteyi %80'e düşür
-                        .toBuffer(); // Görseli buffer olarak al
+                        .resize(300, 300) 
+                        .toFormat('jpeg') 
+                        .jpeg({ quality: 80 }) 
+                        .toBuffer(); 
 
                     // Görseli Base64 formatına dönüştür
                     const base64Image = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
@@ -309,14 +273,12 @@ module.exports.Tweet = {
     },
 
     fav: async (req, res) => {
-        try {  // try-catch ekleyelim
+        try {  
             let message = "";
             const user_id = req.user?._id;
             const tweet_id = req.params?.tweetId;
     
-            // İlk hatanız burada: tweet'i bulup check değişkenine atıyorsunuz
-            // ama sonra updateOne ile güncelleyip tweet'i tekrar bulmaya çalışıyorsunuz
-            // Bunun yerine, tek bir tweet dökümanı üzerinde işlem yapalım:
+           
             
             const tweet = await Tweet.findById(tweet_id);
             if (!tweet) {

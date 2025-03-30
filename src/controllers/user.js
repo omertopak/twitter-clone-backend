@@ -29,17 +29,16 @@ module.exports.User = {
                     try {
                         // Görseli yeniden boyutlandır ve base64 formatına dönüştür
                         const optimizedImageBuffer = await sharp(req.file.path)
-                            .resize(300, 300) // Görseli 300x300 piksele küçült
-                            .toFormat('jpeg') // Görseli JPEG formatına çevir
-                            .jpeg({ quality: 80 }) // Kaliteyi %80'e düşür
-                            .toBuffer(); // Görseli buffer olarak al
+                            .resize(300, 300) 
+                            .toFormat('jpeg') 
+                            .jpeg({ quality: 80 }) 
+                            .toBuffer(); 
     
                         // Base64 formatına dönüştür
                         req.file.optimizedBase64 = `data:image/jpeg;base64,${optimizedImageBuffer.toString('base64')}`;
     
-                        // Orijinal dosyayı silmek isterseniz
                         const fs = require('fs');
-                        fs.unlinkSync(req.file.path); // Geçici dosyayı sil
+                        fs.unlinkSync(req.file.path); 
     
                     } catch (error) {
                         return res.status(500).send({ error: 'Görsel işleme hatası' });
@@ -66,7 +65,7 @@ module.exports.User = {
     
                 console.log(newUser);
                 await newUser.save();
-                res.status(201).json(newUser); // Yanıt gönderme işlemi yalnızca bir kez yapılır
+                res.status(201).json(newUser); 
                 console.log("kayit");
 
             } catch (error) {
